@@ -27,7 +27,7 @@
       <router-view name="payouts" :data="asset"></router-view>
       <router-view name="form" :data="asset"></router-view>
     </v-expansion-panels>
-    <v-card outlined v-if="asset.industry" class="mx-4 mb-4">
+    <v-card outlined v-if="asset.industry && asset.id" class="mx-4 mb-4">
       <v-card-subtitle class="blue--text">{{ asset.industry }}</v-card-subtitle>
       <v-card-text class="caption">{{ asset.description }}</v-card-text>
     </v-card>

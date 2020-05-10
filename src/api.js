@@ -136,11 +136,15 @@ export function getFINNHUBsignal(asset) {
   return new Promise((resolve, reject) => {
     handleApiResponse(url, params)
       .then(json => {
-        asset.signal = json.technicalAnalysis.signal;
-        asset.trending = json.trend.trending;
+        asset.signal = json.technicalAnalysis?.signal;
+        asset.trending = json.trend?.trending;
+        asset.error = null;
         resolve();
       })
-      .catch(err => reject(err));
+      .catch(err => {
+        asset.error = err;
+        reject();
+      });
   });
 }
 

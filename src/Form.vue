@@ -7,7 +7,7 @@
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-card flat v-if="!asset.ticker" color="green accent-1">
-        <v-card-subtitle class="pb-0 black--text">Need help finding a stock symbol?</v-card-subtitle>
+        <v-card-subtitle class="pb-0 black--text body-1">Need help finding a stock symbol?</v-card-subtitle>
         <v-card-actions>
           <v-btn text color="primary">
             <v-icon left>mdi-open-in-new</v-icon>
@@ -233,7 +233,7 @@ export default {
           !!value || !this.soldSwitch || "Sell value required.",
         dateSellRequired: value =>
           !!value || !this.soldSwitch || "Sell date required.",
-        sellAfterBuy: value =>
+        sellAfterBuy: () =>
           !this.asset._dateSell ||
           this.asset._dateBuy < this.asset._dateSell ||
           "Sell date is before purchase date.",
@@ -313,7 +313,7 @@ export default {
       asset.timeseries = trimmedTimeseries;
     },
     save: async function() {
-      this.validateForm();
+      //this.validateForm();
       if (this.valid) {
         this.loading = true;
         await API.getFINNHUBsignal(this.asset);

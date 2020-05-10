@@ -223,7 +223,7 @@ export default {
   },
   mounted: function() {},
   watch: {
-    activeMenuItem: function(newVal, oldVal) {
+    activeMenuItem: function() {
       this.calculateKPIs();
     }
   },

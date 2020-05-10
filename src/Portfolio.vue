@@ -29,7 +29,7 @@
                         <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor()">
                           <v-avatar left class="mr-0">🔍</v-avatar>
                           <span
-                            class="font-weight-medium red-text ml-2"
+                            class="font-weight-medium red--text ml-2"
                             v-if="expandAssets"
                           >No prices found</span>
                         </v-chip>
@@ -39,18 +39,18 @@
                           <v-avatar left class="mr-0">⏰</v-avatar>
                           <span
                             v-if="expandAssets"
-                            class="font-weight-medium red-text ml-2"
+                            class="font-weight-medium red--text ml-2"
                           >Stop Loss Alarm !!!</span>
                         </v-chip>
                       </tr>
                       <tr v-if="item.signal" class="mt-2">
                         <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor()">
                           <v-avatar left class="mr-0">🚦</v-avatar>
-                          <span class="text-uppercase body-2">{{ item.signal }}</span>
+                          <span class="text-uppercase">{{ item.signal }}</span>
                           <span
                             v-if="expandAssets"
-                            class="font-weight-medium ml-2"
-                          >Technical Indicators</span>
+                            class="font-weight-medium ml-2 black--text"
+                          >Techn. Indicator Signal</span>
                         </v-chip>
                       </tr>
                       <!--<tr
@@ -69,7 +69,7 @@
                       <tr v-if="item.forexChange" class="mt-2">
                         <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor()">
                           <v-avatar left class>💱</v-avatar>
-                          <template v-if="expandAssets" class="font-weight-medium">
+                          <template v-if="expandAssets" class="font-weight-medium black--text">
                             <span v-if="item.forexChange > 0" class="ml-2">Currency gains</span>
                             <span v-if="item.forexChange < 0" class="ml-2">Currency losses</span>
                           </template>
@@ -159,7 +159,7 @@ export default {
   },
   data() {
     return {
-      chipColor: "orange lighten-5"
+      chipColor: "orange lighten-4"
     };
   },
   created: function() {},
@@ -215,7 +215,8 @@ export default {
     },*/
     sizeAndColor(val) {
       let classString = this.expandAssets ? "body-2" : "subtitle-1";
-      if (val) classString += val >= 0 ? " green--text" : " red--text";
+      if (val)
+        classString += val >= 0 ? " green--text text--darken-1" : " red--text";
       return classString;
     },
     showInsights() {
