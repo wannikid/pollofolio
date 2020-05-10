@@ -136,8 +136,9 @@ export function getFINNHUBsignal(asset) {
   return new Promise((resolve, reject) => {
     handleApiResponse(url, params)
       .then(json => {
-        asset.signal = json.technicalAnalysis?.signal;
-        asset.trending = json.trend?.trending;
+        if (json.technicalAnalysis)
+          asset.signal = json.technicalAnalysis.signal;
+        if (json.trend) asset.trending = json.trend.trending;
         asset.error = null;
         resolve();
       })
