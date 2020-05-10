@@ -1,2 +1,0 @@
-# pollofolio
-Created with CodeSandbox

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pollofolio</title>
+    <meta property="title" content="Pollofolio" />
+    <meta property="og:title" content="Pollofolio" />
+    <meta name="apple-mobile-web-app-title" content="Pollofolio" />
+    <meta name="theme-color" content="#6200EA" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#6200EA" />
+    <meta property="image" content="./images/icon_192.png" />
+    <meta property="og:image" content="./images/icon_192.png" />
+    <meta property="url" content="https://pollofolio.netlify.com" />
+    <meta property="og:url" content="https://pollofolio.netlify.com" />
+    <meta
+      property="og:description"
+      content="The app gives you magical insights into the mystical world of your stock investments. Free, no registration, no data in the cloud."
+    />
+    <meta
+      name="description"
+      content="The app gives you magical insights into the mystical world of your stock investments. Free, no registration, no data in the cloud."
+    />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes, minimal-ui"
+    />
+    <meta
+      name="keywords"
+      content="analysis, insights, portfolio, stock, stocks, assets, insights, aktien, shares, share, statistics, finance,
+        investing, investment, performance, profit, return, gain, payouts, dividends, track"
+    />
+    <meta name="robots" content="index" />
+    <meta name="author" content="Van Zelleb" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./images/icon_180.png"
+      type="image/png"
+    />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="shortcut icon" href="#" />
+    <link rel="preconnect" href="https://api.exchangeratesapi.io" />
+    <link
+      rel="preload"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"
+    />
+    <link
+      rel="preload"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+    />
+    <link
+      rel="preload"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+      href="https://fonts.googleapis.com/css?family=Lato"
+    />
+    <link
+      rel="preload"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+      href="https://fonts.googleapis.com/css?family=Days+One&display=swap"
+    />
+  </head>
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but this site doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong
+      >
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function() {
+          navigator.serviceWorker.register("./service-worker.js");
+        });
+      }
+    </script>
+  </body>
+</html>
