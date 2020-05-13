@@ -294,8 +294,8 @@ export default {
       this.loading = false;
     },
     allowedDates(val) {
-      if (this.asset.dates.length > 0)
-        return this.asset.timeseries.hasOwnProperty(val) ? true : false;
+      //if (this.asset.dates.length > 0)
+        //return this.asset.timeseries.hasOwnProperty(val) ? true : false;
       // exclude weekends
       let date = new Date(val);
       return ![0, 6].includes(date.getDay()) && date <= new Date();

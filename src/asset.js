@@ -50,7 +50,7 @@ export default class Asset {
 
   get highPrice() {
     let max = Math.max(...Object.values(this._timeseries));
-    return this.yearlyHigh > max ? this.yearlyHigh : max;
+    return max ? max : 0;
   }
 
   get dateBuy() {

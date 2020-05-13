@@ -84,10 +84,7 @@
                           <v-avatar left class="mr-2">📈</v-avatar>
                           <span>{{ item.roi | toLocaleNumber(1) }}</span>
                           <span class="caption mr-2">&nbsp;%</span>
-                          <span
-                            v-if="expandAssets"
-                            class="font-weight-medium black--text"
-                          >Yearly Rate of Return</span>
+                          <span v-if="expandAssets" class="black--text">Yearly Rate of Return</span>
                         </v-chip>
                       </tr>
                       <tr v-if="item.return" class="mt-2">
