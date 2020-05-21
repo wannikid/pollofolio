@@ -3,7 +3,7 @@
     <v-expansion-panel-header class="d-flex justify-space-between">
       <span>
         <v-icon class="pl-0 pr-3 black--text">mdi-cash-usd-outline</v-icon>
-        <span class="font-weight-medium">Payouts</span>
+        <span class="font-weight-medium">Income</span>
       </span>
       <span
         class="d-flex justify-end pr-3"
@@ -12,7 +12,7 @@
     <v-expansion-panel-content>
       <div
         class="body-2 my-2"
-      >Some stocks pay out cash dividends on regular basis. This increases your Rate of Return.</div>
+      >Some stocks pay out dividends on regular basis. This increases the Rate of Return.</div>
       <template v-if="asset.payouts.length > 0">
         <table width="100%" class="py-3 body-2">
           <tr>
@@ -41,7 +41,7 @@
               outlined
               persistent-hint
               v-model="payoutDate"
-              hint="Payout date"
+              hint="Dividend date"
               type="date"
               readonly
               @click="dateModal=true"
@@ -63,7 +63,7 @@
               outlined
               persistent-hint
               v-model.number="payoutValue"
-              hint="Net payout"
+              hint="Net dividend"
               type="number"
               :prefix="$store.state.settings.currency"
               :append-icon="'mdi-delete-outline'"

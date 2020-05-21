@@ -1,13 +1,13 @@
 <template>
   <div class="pb-6">
-    <v-toolbar flat light color>
+    <v-toolbar flat light class="mb-5">
       <v-toolbar-title
         v-if="asset.name"
         class="text-truncate font-weight-black headline"
       >{{asset.name}}</v-toolbar-title>
       <v-toolbar-title v-else class="font-weight-black headline">New Asset</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click="hideDetails()">
+      <v-btn fab dark small @click="hideDetails()" color="grey darken-4">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-toolbar>

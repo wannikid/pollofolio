@@ -21,7 +21,9 @@
           <template v-for="(item, idx) of assets">
             <v-list-item v-show="isSelectedCategory(item)" @click="showDetails(item)" :key="idx">
               <v-list-item-content>
-                <v-list-item-title class="text-truncate bold mb-0">{{ item.name }}</v-list-item-title>
+                <v-list-item-title
+                  class="text-truncate font-weight-black grey--text text--darken-3 mb-0"
+                >{{ item.name }}</v-list-item-title>
                 <v-list-item-subtitle class="text-truncate">
                   <v-row no-gutters>
                     <v-col :class="detailsDirection">
