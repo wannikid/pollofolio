@@ -336,12 +336,13 @@ export default class Asset {
     const hasNoTicker = !this.ticker;
     const hasNoPrice = !this.lastPrice && !this.isSold();
     const hasNoChart = this.dates.length === 0 && this.isSold();
+    // flag to prevent repeated API calls per day for assets with unknown tickers
     const checkedToday = this.lastChecked === today;
     if (
-      hasNoTicker ||
+      (hasNoTicker ||
       hasNoPrice ||
-      hasNoChart ||
-      (!checkedToday && !this.isSold())
+      hasNoChart) &&
+      !checkedToday
     )
       return false;
     return true;

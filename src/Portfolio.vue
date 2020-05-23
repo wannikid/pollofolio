@@ -79,19 +79,19 @@
                       </tr>
                       <tr v-if="item.roi || item.roi === 0" class="mt-2">
                         <v-chip
-                          class="font-weight-medium mr-2"
+                          class="mr-2"
                           :color="chipColor"
                           :class="sizeAndColor(item.roi)"
                         >
                           <v-avatar left class="mr-2">📈</v-avatar>
                           <span>{{ item.roi | toLocaleNumber(1) }}</span>
                           <span class="caption mr-2">&nbsp;%</span>
-                          <span v-if="expandAssets" class="black--text">Yearly Rate of Return</span>
+                          <span v-if="expandAssets" class="font-weight-medium black--text">Yearly Rate of Return</span>
                         </v-chip>
                       </tr>
                       <tr v-if="item.return" class="mt-2">
                         <v-chip
-                          class="font-weight-medium mr-2"
+                          class="mr-2"
                           :color="chipColor"
                           :class="sizeAndColor(item.return)"
                         >

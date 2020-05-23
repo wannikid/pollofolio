@@ -69,6 +69,7 @@ export async function getIEXchart(asset) {
       .then(json => {
         asset.buyPrice = json[0]["close"];
         asset.currency = "USD";
+        asset.lastChecked = new Date().toISOString().substring(0,10)
         resolve();
       })
       .catch(err => reject(err));
@@ -100,6 +101,7 @@ export function getFINNHUBcandle(asset) {
         }
         asset.timeseries = timeseries;
         asset.buyPrice = json.c[0];
+        asset.lastChecked = new Date().toISOString().substring(0,10)
         resolve();
       })
       .catch(err => reject(err));
@@ -163,9 +165,7 @@ export async function getIEXquote(asset) {
         asset.yearlyLow = res.week52Low;
         asset.peRatio = res.peRatio;
         asset.lastPrice = res.latestPrice;
-        asset.lastChecked = new Date().toISOString().substring(0, 10);
-        //asset.lastChange = res.change;
-        //asset.lastChangePct = res.changePercent * 100;
+        asset.lastChecked = new Date().toISOString().substring(0,10)
         resolve();
       })
       .catch(err => reject(err));
@@ -185,8 +185,6 @@ export async function getFINNHUBquote(asset) {
       .then(res => {
         asset.lastPrice = res.c;
         asset.lastChecked = new Date().toISOString().substring(0, 10);
-        //asset.lastChange = res.c - res.pc;
-        //asset.lastChangePct = (asset.lastChange / asset.lastPrice) * 100;
         resolve();
       })
       .catch(err => reject(err));
@@ -262,6 +260,4 @@ export async function getChart(asset) {
           .then(res => (asset.error = null))
           .catch(err => (asset.error = err))
     );
-  // used to prevent the app from checking an asset more than once a day
-  asset.lastChecked = new Date().toISOString().substring(0, 10);
 }

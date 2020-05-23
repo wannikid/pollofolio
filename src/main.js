@@ -11,7 +11,6 @@ import Form from "./Form.vue";
 import Payouts from "./Payouts";
 import Performance from "./Performance";
 import News from "./News";
-//import Settings from "./Settings";
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
@@ -70,19 +69,7 @@ const router = new VueRouter({
         store.state.drawer = true;
         next();
       }
-    } /*,
-    {
-      path: "/settings",
-      name: "settings",
-      components: {
-        default: Portfolio,
-        settings: Settings
-      },
-      beforeEnter: (to, from, next) => {
-        store.state.menuBar = true;
-        next();
-      }
-    }*/
+    }
   ],
   // This will simply make the page scroll to top for all route navigations.
   scrollBehavior() {
