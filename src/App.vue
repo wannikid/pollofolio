@@ -51,7 +51,7 @@
 <script>
 import Asset from "./asset.js";
 import Settings from "./Settings";
-import * as API from "./api";
+import * as API from "./api/api";
 
 export default {
   name: "App",
@@ -110,10 +110,10 @@ export default {
       let promises = [];
       this.assets.forEach(asset => {
         if (!asset.isUpdated()) {
-          promises.push(API.getChart(asset));
+          promises.push(API.requestHandler("history", asset));
           if (!asset.isSold()) {
-            promises.push(API.getQuote(asset));
-            promises.push(API.getFINNHUBsignal(asset));
+            promises.push(API.requestHandler("quote", asset));
+            promises.push(API.requestHandler("signal", asset));
           }
         }
       });

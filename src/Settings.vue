@@ -82,7 +82,7 @@
 
 <script>
 import Asset from "./asset.js";
-import * as API from "./api";
+import * as API from "./api/api";
 
 export default {
   data() {

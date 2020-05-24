@@ -71,9 +71,9 @@
                       <tr v-if="item.forexChange" class="mt-2">
                         <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor()">
                           <v-avatar left class>💱</v-avatar>
-                          <template v-if="expandAssets" class="font-weight-medium black--text">
-                            <span v-if="item.forexChange > 0" class="ml-2">Currency gains</span>
-                            <span v-if="item.forexChange < 0" class="ml-2">Currency losses</span>
+                          <template v-if="expandAssets">
+                            <span v-if="item.forexChange > 0" class="font-weight-medium  ml-2">Currency gains</span>
+                            <span v-if="item.forexChange < 0" class="font-weight-medium  ml-2">Currency losses</span>
                           </template>
                         </v-chip>
                       </tr>

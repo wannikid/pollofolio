@@ -206,8 +206,8 @@
 </template>
 
 <script>
-//import Asset from "./asset.js";
-import * as API from "./api";
+
+import * as API from "./api/api";
 
 export default {
   props: {
@@ -282,20 +282,26 @@ export default {
     },
     async getCompanyInfo() {
       this.loading = true;
-      await API.getCompanyInfo(this.asset);
-      await API.getQuote(this.asset);
-      // update buy price
-      if (this.asset.dateBuy) await this.getBuyPrice();
+      this.asset.error = await API.requestHandler("company", {
+        asset: this.asset
+      });
+      this.asset.error = await API.requestHandler("quote", {
+        asset: this.asset
+      });
+      // update the buy price if there is already a buy date
+      if (this.asset.dateBuy) this.asset.error = await this.getBuyPrice();
       this.loading = false;
     },
     async getBuyPrice() {
       this.loading = true;
-      await API.getChart(this.asset);
+      this.asset.error = await API.requestHandler("history", {
+        asset: this.asset
+      });
       this.loading = false;
     },
     allowedDates(val) {
       //if (this.asset.dates.length > 0)
-        //return this.asset.timeseries.hasOwnProperty(val) ? true : false;
+      //return this.asset.timeseries.hasOwnProperty(val) ? true : false;
       // exclude weekends
       let date = new Date(val);
       return ![0, 6].includes(date.getDay()) && date <= new Date();
@@ -316,7 +322,7 @@ export default {
       //this.validateForm();
       if (this.valid) {
         this.loading = true;
-        await API.getFINNHUBsignal(this.asset);
+        await API.requestHandler("signal", { asset: this.asset });
         this.trim(this.asset);
         if (!this.asset.id) this.$store.commit("addAsset", this.asset);
         else this.$store.commit("updateAsset", this.asset);

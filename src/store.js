@@ -2,7 +2,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
-import * as API from "./api";
+import * as API from "./api/api";
 
 const vuexPersist = new VuexPersist({
   key: "pollofolio",
@@ -76,11 +76,13 @@ export default new Vuex.Store({
   },
   actions: {
     async getCurrencies({ commit, state }) {
-      await API.getEXCHANGERATESlatest(state.currencyList);
+      await API.requestHandler("forexLatest", {
+        currenyList: state.currencyList
+      });
       commit("setCurrencies", state.currencyList);
     },
     async getForex({ commit, state }, { base, currency, date }) {
-      await API.getEXCHANGERATESdate({
+      await API.requestHandler("forexDate", {
         exchangeRates: state.exchangeRates,
         base: base,
         currency: currency,

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import * as API from "./api";
+import * as API from "./api/api";
 
 export default {
   props: {
@@ -79,7 +79,11 @@ export default {
       this.searching = true;
       const from = this.asset.dates[this.range[0]];
       const to = this.asset.dates[this.range[1]];
-      await API.getNews(this.asset, from, to);
+      await API.requestHandler("news", {
+        asset: this.asset,
+        from: from,
+        to: to
+      });
       this.searching = false;
     }
   }
