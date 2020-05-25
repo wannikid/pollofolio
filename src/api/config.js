@@ -100,15 +100,8 @@ export const resources = {
     }
   },
   company: {
-    primaryUri: function({ asset }) {
-      if (!asset.ticker) return {};
-      const uri = providers.iex.baseUrl + "stock/" + asset.ticker + "/company";
-      const params = {
-        token: providers.iex.skey
-      };
-      return { uri, params };
-    },
-    primaryUriHandler: function(json, { asset }) {
+    primaryAPI: "company",
+    primaryAPIHandler: function(json, { asset }) {
       // prevent overwriting user's naming
       if (!asset.name) asset.name = json.companyName;
       asset.address = [

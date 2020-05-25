@@ -24,10 +24,19 @@ function getApiResponse(uri, params) {
 // handles requests that have a fallback API provider, e.g. when request limit is reached or when symbol is unknown
 export function requestHandler(type, requestObj) {
   return new Promise(function(resolve) {
-    let { uri, params } = resources[type].primaryUri(requestObj);
-    getApiResponse(uri, params)
+    //let { uri, params } = resources[type].primaryUri(requestObj);
+    //getApiResponse(uri, params)
+    fetch(
+      "https://pollofolio.netlify.app/.netlify/functions/" +
+        resources[type].primaryAPI,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestObj)
+      }
+    )
       .then(json => {
-        resources[type].primaryUriHandler(json, requestObj);
+        resources[type].primaryAPIHandler(json, requestObj);
         resolve();
       })
       .catch(err => {
