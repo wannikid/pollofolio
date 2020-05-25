@@ -3,3 +3,9 @@
 [build]
   # Directory with the serverless Lambda functions to deploy to AWS.
   functions = "./functions/"
+
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
