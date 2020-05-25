@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
     // if the API call fails, e.g. because of an unknown stock symbol
     return {
       statusCode: 404,
-      body: responseText
+      body: e.message
     };
   }
 };
