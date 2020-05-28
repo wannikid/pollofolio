@@ -9,9 +9,9 @@ exports.handler = async event => {
   Object.keys(body.params).forEach(key =>
     uri.searchParams.append(key, body.params[key])
   );
-  let response = await callApi(uri);
+  const responseString = await callApi(uri);
   return {
     statusCode: 200,
-    body: response
+    body: responseString
   };
 };

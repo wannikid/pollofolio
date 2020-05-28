@@ -6,10 +6,10 @@ module.exports = function callApi(uri) {
     try {
       const res = await fetch(uri);
       responseText = await res.text();
-      return responseText;
+      resolve(responseText);
     } catch (e) {
       // if the API call fails, e.g. because of an unknown stock symbol
-      return e.message;
+      resolve(e.message);
     }
   });
 };
