@@ -110,10 +110,10 @@ export default {
       let promises = [];
       this.assets.forEach(asset => {
         if (!asset.isUpdated()) {
-          promises.push(API.requestHandler("history", asset));
+          promises.push(API.requestHandler("history",{ asset: asset }));
           if (!asset.isSold()) {
-            promises.push(API.requestHandler("quote", asset));
-            promises.push(API.requestHandler("signal", asset));
+            promises.push(API.requestHandler("quote", { asset: asset }));
+            promises.push(API.requestHandler("signal", { asset: asset }));
           }
         }
       });

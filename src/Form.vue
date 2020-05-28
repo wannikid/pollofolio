@@ -281,7 +281,7 @@ export default {
     },
     async getCompanyInfo() {
       this.loading = true;
-      this.asset.error = await API.requestHandler("company", this.asset);
+      this.asset.error = await API.requestHandler("company", { asset: this.asset });
       this.asset.error = await API.requestHandler("quote", {
         asset: this.asset
       });
