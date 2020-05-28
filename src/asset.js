@@ -237,9 +237,10 @@ export default class Asset {
     if (
       isNaN(this._stopLossBaseline) ||
       this.lastPrice >= this._stopLossBaseline
-    )
+    ) {
       this._stopLossBaseline = this.lastPrice;
-    else return null;
+      return this._stopLossBaseline;
+    } else return null;
   }
 
   set stopLossBaseline(val) {
@@ -338,12 +339,7 @@ export default class Asset {
     const hasNoChart = this.dates.length === 0 && this.isSold();
     // flag to prevent repeated API calls per day for assets with unknown tickers
     const checkedToday = this.lastChecked === today;
-    if (
-      (hasNoTicker ||
-      hasNoPrice ||
-      hasNoChart) &&
-      !checkedToday
-    )
+    if ((hasNoTicker || hasNoPrice || hasNoChart) && !checkedToday)
       return false;
     return true;
   }

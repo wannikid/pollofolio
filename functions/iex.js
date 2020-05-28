@@ -1,4 +1,4 @@
-import callApi from "./utils";
+const callApi = require("./utils/callApi");
 
 exports.handler = async (event, context) => {
   const token = process.env.VUE_APP_IEXCLOUD_SECRET_KEY;

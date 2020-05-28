@@ -1,7 +1,7 @@
 import { resources } from "./config";
 
 function getApiResponse(option, requestObj) {
-  return new Promise(async function(resolve, reject) {
+  return new Promise(async function(resolve) {
     //let text = null;
 
     // generate the the address to call the API with

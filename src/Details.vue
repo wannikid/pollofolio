@@ -72,7 +72,7 @@ export default {
     }
   },
   methods: {
-    hideDetails(item) {
+    hideDetails() {
       this.$store.state.drawer = false;
     },
     removeAsset(id) {

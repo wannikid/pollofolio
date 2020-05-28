@@ -266,7 +266,7 @@ export default {
     }
   },
   methods: {
-    hideDetails(item) {
+    hideDetails() {
       //this.$router.push({ name: "assets" });
       this.$store.state.drawer = false;
     },
