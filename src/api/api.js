@@ -2,27 +2,21 @@ import { resources } from "./config";
 
 function getApiResponse(option, requestObj) {
   return new Promise(async function(resolve) {
-    //let text = null;
-
     // generate the the address to call the API with
     let { uri, params } = option.getUri(requestObj);
     // uri will be falsy if key information is missing in the request object
     if (!uri) resolve("Insufficent information.");
-    // attach parameters to uri
 
-    //const res = await fetch(uri);
-    const res = await fetch("/.netlify/functions/" + option.provider, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uri, params })
-    });
+    const res = await fetch(
+      "https://pollofolio.netlify.app/.netlify/functions/" + option.provider,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uri, params })
+      }
+    );
     const json = await res.json;
     const result = option.handleResponse(json, requestObj);
-    // by reading the response as text we can retrieve API error messages
-    //text = await res.text();
-    // this will cause an error when the response is not a JSON string
-    //let json = JSON.parse(text);
-    // returns the JSON object to the function that will handle the response
     resolve(result);
   });
 }
@@ -45,18 +39,5 @@ export function requestHandler(type, requestObj) {
         else i++;
       }
     }
-    // try secondary API in case there was an error
-    /*if (options.length > 1) {
-          option = options[2];
-          getApiResponse(option.provider)
-            .then(json => {
-              option.handleResponse(json, requestObj);
-              resolve();
-            })
-            .catch(err => {
-              resolve(err);
-            });
-        } else resolve(err);
-      });*/
   });
 }
