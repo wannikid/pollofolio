@@ -99,7 +99,7 @@ export const resources = {
         return { uri, params };
       },
       handleResponse: function(json, { asset }) {
-        if (!asset || !asset.name) asset.name = json.companyName;
+        if (!asset.name) asset.name = json.companyName;
         asset.lastPrice = json.latestPrice;
         asset.currency = "USD";
         asset.lastChecked = new Date().toISOString().substring(0, 10);
