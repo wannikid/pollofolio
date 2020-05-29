@@ -281,7 +281,6 @@ export default {
     },
     async getCompanyInfo() {
       this.loading = true;
-      this.asset.error = await API.requestHandler("company", { asset: this.asset });
       this.asset.error = await API.requestHandler("quote", {
         asset: this.asset
       });
@@ -319,7 +318,10 @@ export default {
       //this.validateForm();
       if (this.valid) {
         this.loading = true;
+        // get some additional data on the asset
         await API.requestHandler("signal", { asset: this.asset });
+        await API.requestHandler("company", { asset: this.asset });
+      // trim the timeseries of prices from buy to sell/current date
         this.trim(this.asset);
         if (!this.asset.id) this.$store.commit("addAsset", this.asset);
         else this.$store.commit("updateAsset", this.asset);

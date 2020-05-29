@@ -11,14 +11,11 @@ function getApiResponse(option, requestObj) {
     // attach parameters to uri
 
     //const res = await fetch(uri);
-    const res = await fetch(
-      "https://pollofolio.netlify.app/.netlify/functions/" + option.provider,
-      {
-        method: "POST",
-        //headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uri, params })
-      }
-    );
+    const res = await fetch("/.netlify/functions/" + option.provider, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uri, params })
+    });
     const json = await res.json;
     const result = option.handleResponse(json, requestObj);
     // by reading the response as text we can retrieve API error messages

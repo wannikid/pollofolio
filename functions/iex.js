@@ -1,5 +1,9 @@
 const callApi = require("./utils/callApi");
 
+const headers = {
+  "Access-Control-Allow-Origin": "*"
+};
+
 exports.handler = async event => {
   const token = process.env.VUE_APP_IEXCLOUD_SECRET_KEY;
   // Parse the body contents into an object.
@@ -12,6 +16,7 @@ exports.handler = async event => {
   const responseString = await callApi(uri);
   return {
     statusCode: 200,
+    headers,
     body: responseString
   };
 };

@@ -1,8 +1,3 @@
-import dotenv from "dotenv";
-
-// in the test environment get the variables from the .env file
-if (process.env.NODE_ENV !== "production") dotenv.config();
-
 const providers = {
   finnhub: {
     provider: "finnhub",

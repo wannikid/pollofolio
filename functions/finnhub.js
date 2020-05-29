@@ -1,6 +1,6 @@
 const callApi = require("./utils/callApi");
 
-exports.handler = async (event, context) => {
+exports.handler = async event => {
   const token = process.env.VUE_APP_FINNHUB_SECRET_KEY;
   // Parse the body contents into an object.
   let { uri, params } = JSON.parse(event.body);

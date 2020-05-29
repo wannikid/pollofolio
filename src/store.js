@@ -82,7 +82,7 @@ export default new Vuex.Store({
       commit("setCurrencies", state.currencyList);
     },
     async getForex({ commit, state }, { base, currency, date }) {
-      await API.requestHandler("forexDate", {
+      await API.requestHandler("forexByDate", {
         exchangeRates: state.exchangeRates,
         base: base,
         currency: currency,
