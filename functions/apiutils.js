@@ -21,11 +21,11 @@ exports.callApi = function(uri, params, origin) {
         uri.searchParams.append(key, params[key])
       );
       res = await fetch(uri);
-      responseText = await res.json();
+      responseText = await res.text();
       resolve({
         statusCode: 200,
         headers,
-        body: JSON.stringify(responseText)
+        body: responseText
       });
     } catch (e) {
       // if the API call fails, e.g. because of an unknown stock symbol

@@ -2,6 +2,7 @@ import { resources } from "./config";
 
 function getApiResponse(option, requestObj) {
   return new Promise(async function(resolve, reject) {
+    let resString = null;
     // generate the the address to call the API with
     let { uri, params } = option.getUri(requestObj);
     // uri will be falsy if key information is missing in the request object
@@ -15,12 +16,15 @@ function getApiResponse(option, requestObj) {
         body: JSON.stringify({ uri, params })
       }
     );
-    console.log(res);
-    const json = await res.json();
-    if (res.ok) {
+    //console.log(res);
+    try {
+      resString = await res.text();
+      const json = JSON.parse(resString);
       option.handleResponse(json, requestObj);
       resolve();
-    } else reject(res.text());
+    } catch (e) {
+      reject(resString);
+    }
   });
 }
 
