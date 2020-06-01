@@ -15,7 +15,6 @@ module.exports = function callApi(uri) {
   });
 };
 
-module.exports = allowedOrigins = [
-  "https://h6kbw.csb.app",
-  "https://pollofolio.netlify.app"
-];
+module.exports = function allowedOrigins() {
+  return ["https://h6kbw.csb.app", "https://pollofolio.netlify.app"];
+};
