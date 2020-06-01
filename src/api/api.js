@@ -11,11 +11,11 @@ function getApiResponse(option, requestObj) {
       "https://pollofolio.netlify.app/.netlify/functions/" + option.provider,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({ uri, params })
       }
     );
-    const json = await res.json;
+    const json = await res.json();
     const result = option.handleResponse(json, requestObj);
     resolve(result);
   });

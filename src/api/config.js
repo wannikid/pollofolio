@@ -118,6 +118,7 @@ export const resources = {
       },
       handleResponse: function(json, asset) {
         // prevent overwriting user's naming
+        console.log(json);
         if (!asset || !asset.name) asset.name = json.companyName;
         asset.address = [
           json.address,
@@ -172,7 +173,7 @@ export const resources = {
     1: {
       provider: providers.exchangeratesapi.provider,
       getUri: function({ base, currency, date }) {
-        const uri = providers.forex.baseUrl + date;
+        const uri = providers.exchangeratesapi.baseUrl + date;
         const params = {
           base: base,
           symbols: currency
@@ -188,7 +189,7 @@ export const resources = {
     1: {
       provider: providers.exchangeratesapi.provider,
       getUri: function() {
-        const uri = providers.forex.baseUrl + "latest";
+        const uri = providers.exchangeratesapi.baseUrl + "latest";
         const params = {};
         return { uri, params };
       },
