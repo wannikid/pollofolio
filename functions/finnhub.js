@@ -1,8 +1,4 @@
-const { callApi, allowedOrigins } = require("./apiutils");
-
-const headers = {
-  "Access-Control-Allow-Origin": "*"
-};
+const { callApi } = require("./apiutils");
 
 exports.handler = async event => {
   const token = process.env.VUE_APP_FINNHUB_SECRET_KEY;
@@ -12,7 +8,7 @@ exports.handler = async event => {
   params.token = token;
   Object.keys(params).forEach(key => uri.searchParams.append(key, params[key]));
   let response = await callApi(uri);
-  response.headers = headers;
+  //response.headers = headers;
   /*return {
     statusCode: 200,
     headers,

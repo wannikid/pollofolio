@@ -1,4 +1,4 @@
-const { callApi, allowedOrigins } = require("./apiutils");
+const { callApi } = require("./apiutils");
 
 const headers = {
   "Access-Control-Allow-Origin": "*"
