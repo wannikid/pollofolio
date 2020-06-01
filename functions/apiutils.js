@@ -9,6 +9,7 @@ exports.callApi = function(uri, params, origin) {
   return new Promise(async function(resolve) {
     let responseText = null;
     let headers = {};
+    let res = null;
 
     try {
       uri = new URL(uri);
@@ -18,19 +19,19 @@ exports.callApi = function(uri, params, origin) {
       if (allowedOrigins.indexOf(origin) > -1) {
         headers["Access-Control-Allow-Origin"] = origin;
       }
-      let res = await fetch(uri);
-      responseText = await res.text();
+      res = await fetch(uri);
+      responseText = await res.json();
       resolve({
         statusCode: 200,
         headers,
-        body: responseText
+        body: JSON.stringify(responseText)
       });
     } catch (e) {
       // if the API call fails, e.g. because of an unknown stock symbol
       resolve({
         statusCode: 200,
         headers,
-        body: e.message
+        body: { error: res.text() }
       });
     }
   });

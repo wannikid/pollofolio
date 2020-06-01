@@ -77,7 +77,7 @@ export default new Vuex.Store({
   actions: {
     async getCurrencies({ commit, state }) {
       await API.requestHandler("forexLatest", {
-        currenyList: state.currencyList
+        currencyList: state.currencyList
       });
       commit("setCurrencies", state.currencyList);
     },

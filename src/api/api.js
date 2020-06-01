@@ -1,7 +1,7 @@
 import { resources } from "./config";
 
 function getApiResponse(option, requestObj) {
-  return new Promise(async function(resolve) {
+  return new Promise(async function(resolve, reject) {
     // generate the the address to call the API with
     let { uri, params } = option.getUri(requestObj);
     // uri will be falsy if key information is missing in the request object
@@ -16,8 +16,10 @@ function getApiResponse(option, requestObj) {
       }
     );
     const json = await res.json();
-    const result = option.handleResponse(json, requestObj);
-    resolve(result);
+    if (!json.error) {
+      option.handleResponse(json, requestObj);
+      resolve();
+    } else reject(json.error);
   });
 }
 
