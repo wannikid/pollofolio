@@ -1,5 +1,4 @@
-const callApi = require("./utils/callApi");
-const allowedOrigins = require("./utils/allowedOrigins");
+const { callApi, allowedOrigins } = require("./apiutils");
 
 exports.handler = async event => {
   const origin = event.headers.origin;
@@ -14,7 +13,7 @@ exports.handler = async event => {
   //const responseString = await callApi(uri);
   response = await callApi(uri);
 
-  if (allowedOrigins().indexOf(origin) > -1) {
+  if (allowedOrigins.indexOf(origin) > -1) {
     response.setHeader("Access-Control-Allow-Origin", origin);
   }
 
