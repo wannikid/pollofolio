@@ -15,11 +15,12 @@ function getApiResponse(option, requestObj) {
         body: JSON.stringify({ uri, params })
       }
     );
+    console.log(res);
     const json = await res.json();
-    if (!json.error) {
+    if (res.ok) {
       option.handleResponse(json, requestObj);
       resolve();
-    } else reject(json.error);
+    } else reject(res.text());
   });
 }
 
@@ -32,9 +33,9 @@ export function requestHandler(type, requestObj) {
     while (i <= options) {
       try {
         // call the netlify function/backend to trigger the API call
-        await getApiResponse(resources[type][i], requestObj);
+        const res = await getApiResponse(resources[type][i], requestObj);
         i = options + 1;
-        resolve();
+        resolve(res);
       } catch (e) {
         // return the error if there is no other option left to try
         if (options === i) resolve(e.message);
