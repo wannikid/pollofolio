@@ -12,10 +12,11 @@ exports.handler = async event => {
   );
   //const responseString = await callApi(uri);
   let response = await callApi(uri);
+  response.setHeader("Access-Control-Allow-Origin", "*");
 
-  if (allowedOrigins.indexOf(origin) > -1) {
+  /*if (allowedOrigins.indexOf(origin) > -1) {
     response.setHeader("Access-Control-Allow-Origin", origin);
-  }
+  }*/
 
   return response;
 

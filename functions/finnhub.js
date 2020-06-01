@@ -11,10 +11,12 @@ exports.handler = async event => {
   uri = new URL(uri);
   params.token = token;
   Object.keys(params).forEach(key => uri.searchParams.append(key, params[key]));
-  let responseString = await callApi(uri);
-  return {
+  let response = await callApi(uri);
+  response.headers = headers;
+  /*return {
     statusCode: 200,
     headers,
     body: responseString
-  };
+  };*/
+  return response;
 };
