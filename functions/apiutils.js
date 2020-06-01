@@ -2,9 +2,10 @@ const fetch = require("node-fetch");
 
 exports.callApi = function(uri) {
   return new Promise(async function(resolve) {
-    let responseText = null;
+    //let responseText = null;
+    let res;
     try {
-      const res = await fetch(uri);
+      res = await fetch(uri);
       //responseText = await res.text();
       //resolve(responseText);
       resolve(res);
