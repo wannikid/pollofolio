@@ -11,7 +11,7 @@ exports.handler = async event => {
     uri.searchParams.append(key, body.params[key])
   );
   //const responseString = await callApi(uri);
-  response = await callApi(uri);
+  let response = await callApi(uri);
 
   if (allowedOrigins.indexOf(origin) > -1) {
     response.setHeader("Access-Control-Allow-Origin", origin);
