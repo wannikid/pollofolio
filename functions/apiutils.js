@@ -32,7 +32,7 @@ exports.callApi = function(uri, params, origin) {
       resolve({
         statusCode: 200,
         headers,
-        body: { error: res.text() }
+        body: { error: e.message }
       });
     }
   });
