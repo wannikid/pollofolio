@@ -11,14 +11,15 @@ exports.callApi = function(uri, params, origin) {
     let headers = {};
     let res = null;
 
+    if (allowedOrigins.indexOf(origin) > -1) {
+      headers["Access-Control-Allow-Origin"] = origin;
+    }
+
     try {
       uri = new URL(uri);
       Object.keys(params).forEach(key =>
         uri.searchParams.append(key, params[key])
       );
-      //if (allowedOrigins.indexOf(origin) > -1) {
-      headers["Access-Control-Allow-Origin"] = "*";
-      //}
       res = await fetch(uri);
       responseText = await res.json();
       resolve({
