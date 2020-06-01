@@ -1,18 +1,8 @@
 const { callApi } = require("./apiutils");
 
-const headers = {
-  "Access-Control-Allow-Origin": "*"
-};
-
 exports.handler = async event => {
-  // Parse the body contents into an object.
+  const origin = event.headers.origin;
   let { uri, params } = JSON.parse(event.body);
-  uri = new URL(uri);
-  Object.keys(params).forEach(key => uri.searchParams.append(key, params[key]));
-  let responseString = await callApi(uri);
-  return {
-    statusCode: 200,
-    headers,
-    body: responseString
-  };
+  let response = await callApi(uri, params, origin);
+  return response;
 };
