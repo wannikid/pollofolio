@@ -71,8 +71,7 @@ export default {
   },
   mounted: function() {
     this.fetchPortfolioData();
-    this.fetchExchangeRates();
-    this.fetchCurrencies();
+    this.$store.dispatch("getExchangeRates", this.assets);
   },
   computed: {
     assets() {
@@ -97,20 +96,11 @@ export default {
     }
   },
   methods: {
-    fetchCurrencies() {
-      // initiate currencyList if not done already
-      if (this.$store.state.currencyList.length < 2) {
-        this.$store.state.currencyList.push(
-          this.$store.state.settings.currency
-        );
-        this.$store.dispatch("getCurrencies");
-      }
-    },
     async fetchPortfolioData() {
       let promises = [];
       this.assets.forEach(asset => {
         if (!asset.isUpdated()) {
-          promises.push(API.requestHandler("history",{ asset: asset }));
+          promises.push(API.requestHandler("history", { asset: asset }));
           if (!asset.isSold()) {
             promises.push(API.requestHandler("quote", { asset: asset }));
             promises.push(API.requestHandler("signal", { asset: asset }));
@@ -123,37 +113,6 @@ export default {
         this.$store.commit("setAssets", this.assets);
         this.$store.dispatch("updateInsights");
       }
-    },
-    fetchExchangeRates() {
-      const today = new Date().toISOString().substring(0, 10);
-      const base = this.$store.state.settings.currency;
-      let hasLastestForex = false;
-      let hasForexForBuyDate = false;
-
-      let baseObj = this.$store.state.exchangeRates[base];
-      // retrieve latest exchange rates for all currency combinations
-      this.assets.forEach(asset => {
-        if (asset.currency && asset.currency !== base) {
-          const hasCurrencyPair = baseObj.hasOwnProperty(asset.currency);
-          if (hasCurrencyPair) {
-            hasLastestForex = baseObj[asset.currency][today];
-            hasForexForBuyDate = baseObj[asset.currency][asset.dateBuy];
-          } else baseObj[asset.currency] = {};
-
-          if (!hasLastestForex)
-            this.$store.dispatch("getForex", {
-              base: base,
-              currency: asset.currency,
-              date: today
-            });
-          if (!hasForexForBuyDate)
-            this.$store.dispatch("getForex", {
-              base: base,
-              currency: asset.currency,
-              date: asset.dateBuy
-            });
-        }
-      }, this);
     },
     setCategory(id, item) {
       this.activeMenuItem = id;

@@ -48,7 +48,7 @@
                       <tr v-if="item.signal" class="mt-2">
                         <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor()">
                           <v-avatar left class="mr-0">🚦</v-avatar>
-                          <span class="text-uppercase">{{ item.signal }}</span>
+                          <span class="ml-2 text-uppercase">{{ item.signal }}</span>
                           <span
                             v-if="expandAssets"
                             class="font-weight-medium ml-2 black--text"
@@ -70,36 +70,37 @@
                       </tr>-->
                       <tr v-if="item.forexChange" class="mt-2">
                         <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor()">
-                          <v-avatar left class>💱</v-avatar>
+                          <v-avatar left class="mr-0">💱</v-avatar>
                           <template v-if="expandAssets">
-                            <span v-if="item.forexChange > 0" class="font-weight-medium  ml-2">Currency gains</span>
-                            <span v-if="item.forexChange < 0" class="font-weight-medium  ml-2">Currency losses</span>
+                            <span
+                              v-if="item.forexChange > 0"
+                              class="font-weight-medium ml-2"
+                            >Currency gains</span>
+                            <span
+                              v-if="item.forexChange < 0"
+                              class="font-weight-medium ml-2"
+                            >Currency losses</span>
                           </template>
                         </v-chip>
                       </tr>
                       <tr v-if="item.roi || item.roi === 0" class="mt-2">
-                        <v-chip
-                          class="mr-2"
-                          :color="chipColor"
-                          :class="sizeAndColor(item.roi)"
-                        >
-                          <v-avatar left class="mr-2">📈</v-avatar>
-                          <span>{{ item.roi | toLocaleNumber(1) }}</span>
-                          <span class="caption mr-2">&nbsp;%</span>
-                          <span v-if="expandAssets" class="font-weight-medium black--text">Yearly Rate of Return</span>
+                        <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor(item.roi)">
+                          <v-avatar left class="mr-0">📈</v-avatar>
+                          <span class="ml-2">{{ item.roi | toLocaleNumber(1) }}</span>
+                          <span class="caption">&nbsp;%</span>
+                          <span
+                            v-if="expandAssets"
+                            class="ml-2 font-weight-medium black--text"
+                          >Yearly Rate of Return</span>
                         </v-chip>
                       </tr>
                       <tr v-if="item.return" class="mt-2">
-                        <v-chip
-                          class="mr-2"
-                          :color="chipColor"
-                          :class="sizeAndColor(item.return)"
-                        >
-                          <v-avatar left class="mr-2">💰</v-avatar>
-                          <span class>{{ item.return | toLocaleNumber(0) }}</span>
-                          <span class="caption mr-2">&nbsp;{{ $store.state.settings.currency }}</span>
+                        <v-chip class="mr-2" :color="chipColor" :class="sizeAndColor(item.return)">
+                          <v-avatar left class="mr-0">💰</v-avatar>
+                          <span  class="ml-2">{{ item.return | toLocaleNumber(0) }}</span>
+                          <span class="caption">&nbsp;{{ $store.state.settings.currency }}</span>
                           <span
-                            class="font-weight-medium black--text"
+                            class="ml-2 font-weight-medium black--text"
                             v-if="expandAssets"
                           >Realized earnings</span>
                         </v-chip>

@@ -1,4 +1,3 @@
-// store.js
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
@@ -19,10 +18,7 @@ export default new Vuex.Store({
     drawer: null,
     assets: [],
     stats: {},
-    exchangeRates: {
-      EUR: {}
-    },
-    currencyList: [],
+    exchangeRates: null,
     settings: {
       stopLossPct: 0,
       taxes: 0,
@@ -45,7 +41,7 @@ export default new Vuex.Store({
       state.settings.currency = value;
     },
     setCurrencies(state, value) {
-      state.currencyList = value;
+      state.exchangeRates = value;
     },
     setTaxes(state, value) {
       state.settings.taxes = parseFloat(value);
@@ -75,11 +71,52 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async getCurrencies({ commit, state }) {
-      await API.requestHandler("forexLatest", {
-        currencyList: state.currencyList
+    getCurrencies({ commit, state }) {
+      return new Promise(async function(resolve) {
+        state.exchangeRates = {};
+        state.exchangeRates[state.settings.currency] = {};
+        await API.requestHandler("forexLatest", {
+          exchangeRates: state.exchangeRates
+        });
+        commit("setCurrencies", state.exchangeRates);
+        resolve();
       });
-      commit("setCurrencies", state.currencyList);
+    },
+    getExchangeRates({ commit, state, dispatch }, assets) {
+      return new Promise(async function(resolve) {
+        const today = new Date().toISOString().substring(0, 10);
+        const base = state.settings.currency;
+        let hasLastestForex = false;
+        let hasForexForBuyDate = false;
+
+        if (!state.exchangeRates) await dispatch("getCurrencies");
+
+        let baseObj = state.exchangeRates[base];
+        // retrieve latest exchange rates for all currency combinations
+        assets.forEach(asset => {
+          if (asset.currency && asset.currency !== base) {
+            const hasCurrencyPair = baseObj.hasOwnProperty(asset.currency);
+            if (hasCurrencyPair) {
+              hasLastestForex = baseObj[asset.currency][today];
+              hasForexForBuyDate = baseObj[asset.currency][asset.dateBuy];
+            } else baseObj[asset.currency] = {};
+
+            if (!hasLastestForex)
+              dispatch("getForex", {
+                base: base,
+                currency: asset.currency,
+                date: today
+              });
+            if (!hasForexForBuyDate)
+              dispatch("getForex", {
+                base: base,
+                currency: asset.currency,
+                date: asset.dateBuy
+              });
+          }
+        }, this);
+        resolve();
+      });
     },
     async getForex({ commit, state }, { base, currency, date }) {
       await API.requestHandler("forexByDate", {
@@ -143,6 +180,9 @@ export default new Vuex.Store({
     },
     settings: state => {
       return state.settings;
+    },
+    currencyList: state => {
+      return state.exchangeRates ? Object.keys(state.exchangeRates) : [];
     }
   },
   plugins: [vuexPersist.plugin]

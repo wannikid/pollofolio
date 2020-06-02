@@ -30,7 +30,7 @@ exports.callApi = function(uri, params, origin) {
     } catch (e) {
       // if the API call fails, e.g. because of an unknown stock symbol
       resolve({
-        statusCode: 200,
+        statusCode: 404,
         headers,
         body: e.message
       });

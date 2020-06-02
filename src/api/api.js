@@ -1,29 +1,25 @@
-import { resources } from "./config";
+import { resources, netlifyFuncBaseUrl } from "./config";
 
 function getApiResponse(option, requestObj) {
   return new Promise(async function(resolve, reject) {
     let resString = null;
-    // generate the the address to call the API with
-    let { uri, params } = option.getUri(requestObj);
-    // uri will be falsy if key information is missing in the request object
-    if (!uri) resolve("Insufficent information.");
 
-    const res = await fetch(
-      "https://pollofolio.netlify.app/.netlify/functions/" + option.provider,
-      {
+    try {
+      // generate the the address to call the API with
+      let { uri, params } = option.getUri(requestObj);
+      const res = await fetch(netlifyFuncBaseUrl + option.provider, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({ uri, params })
-      }
-    );
-    //console.log(res);
-    try {
+      });
       resString = await res.text();
       const json = JSON.parse(resString);
       option.handleResponse(json, requestObj);
       resolve();
     } catch (e) {
-      reject(resString);
+      // show any information the API returned instead of error message
+      if (resString) e.message = resString;
+      reject(new Error(e.message));
     }
   });
 }
@@ -33,18 +29,24 @@ export function requestHandler(type, requestObj) {
   return new Promise(async function(resolve) {
     let options = Object.keys(resources[type]).length;
     let i = 1;
+    let res = null;
 
     while (i <= options) {
       try {
         // call the netlify function/backend to trigger the API call
-        const res = await getApiResponse(resources[type][i], requestObj);
-        i = options + 1;
-        resolve(res);
+        res = await getApiResponse(resources[type][i], requestObj);
+        i = options;
       } catch (e) {
-        // return the error if there is no other option left to try
-        if (options === i) resolve(e.message);
-        else i++;
+        // catch any API error and return the error message if there is no other option left to try
+        if (i === options) {
+          i = options;
+          res = e.message;
+        }
+      } finally {
+        // try next option for this resource type
+        i++;
       }
     }
+    resolve(res);
   });
 }

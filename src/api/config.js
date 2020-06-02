@@ -1,3 +1,6 @@
+export const netlifyFuncBaseUrl =
+  "https://pollofolio.netlify.app/.netlify/functions/";
+
 const providers = {
   finnhub: {
     provider: "finnhub",
@@ -13,12 +16,24 @@ const providers = {
   }
 };
 
+// helper functions
+const timestamp = date => {
+  date = date ? new Date(date) : new Date();
+  return (date.getTime() / 1000) | 0;
+};
+
+const checkTicker = asset => {
+  if (!asset || !asset.ticker) throw Error("Insufficent information.");
+};
+
+const today = new Date().toISOString().substring(0, 10);
+
 export const resources = {
   history: {
     2: {
       provider: providers.iex.provider,
       getUri: function({ asset }) {
-        if (!asset || !asset.ticker) return {};
+        checkTicker(asset);
         const uri =
           providers.iex.baseUrl +
           "stock/" +
@@ -31,20 +46,17 @@ export const resources = {
         return { uri, params };
       },
       handleResponse: function(json, { asset }) {
+        if (!json[0]) throw Error("No data");
         asset.buyPrice = json[0]["close"];
         asset.currency = "USD";
-        asset.lastChecked = new Date().toISOString().substring(0, 10);
+        asset.lastChecked = today;
       }
     },
     1: {
       provider: providers.finnhub.provider,
       getUri: function({ asset }) {
-        if (!asset || !asset.ticker) return {};
+        checkTicker(asset);
         const uri = providers.finnhub.baseUrl + "stock/candle";
-        const timestamp = date => {
-          date = date ? new Date(date) : new Date();
-          return (date.getTime() / 1000) | 0;
-        };
         const endDate = asset.isSold() ? asset.dateSell : new Date();
         let params = {
           symbol: asset.ticker,
@@ -56,17 +68,14 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         let timeseries = {};
-        if (json.t) {
-          for (let i = 0; i < json.t.length - 1; i++) {
-            let date = new Date(json.t[i] * 1000)
-              .toISOString()
-              .substring(0, 10);
-            timeseries[date] = json.c[i];
-          }
-          asset.timeseries = timeseries;
-          asset.buyPrice = json.c[0];
+        if (!json.t) throw Error("No data");
+        for (let i = 0; i < json.t.length - 1; i++) {
+          let date = new Date(json.t[i] * 1000).toISOString().substring(0, 10);
+          timeseries[date] = json.c[i];
         }
-        asset.lastChecked = new Date().toISOString().substring(0, 10);
+        asset.timeseries = timeseries;
+        asset.buyPrice = json.c[0];
+        asset.lastChecked = today;
       }
     }
   },
@@ -74,7 +83,7 @@ export const resources = {
     2: {
       provider: providers.finnhub.provider,
       getUri: function({ asset }) {
-        if (!asset || !asset.ticker) return {};
+        checkTicker(asset);
         const uri = providers.finnhub.baseUrl + "quote";
         const params = {
           symbol: asset.ticker,
@@ -83,17 +92,16 @@ export const resources = {
         return { uri, params };
       },
       handleResponse: function(json, { asset }) {
-        if (json[0]) {
-          asset.buyPrice = json[0]["close"];
-          asset.currency = "USD";
-          asset.lastChecked = new Date().toISOString().substring(0, 10);
-        }
+        if (!json[0]) throw Error("No data");
+        asset.buyPrice = json[0]["close"];
+        asset.currency = "USD";
+        asset.lastChecked = today;
       }
     },
     1: {
       provider: providers.iex.provider,
       getUri: function({ asset }) {
-        if (!asset || !asset.ticker) return {};
+        checkTicker(asset);
         const uri = providers.iex.baseUrl + "stock/" + asset.ticker + "/quote";
         const params = {};
         return { uri, params };
@@ -102,7 +110,7 @@ export const resources = {
         if (!asset.name) asset.name = json.companyName;
         asset.lastPrice = json.latestPrice;
         asset.currency = "USD";
-        asset.lastChecked = new Date().toISOString().substring(0, 10);
+        asset.lastChecked = today;
       }
     }
   },
@@ -110,7 +118,7 @@ export const resources = {
     1: {
       provider: providers.iex.provider,
       getUri: function({ asset }) {
-        if (!asset || !asset.ticker) return {};
+        checkTicker(asset);
         const uri =
           providers.iex.baseUrl + "stock/" + asset.ticker + "/company";
         const params = {};
@@ -118,7 +126,6 @@ export const resources = {
       },
       handleResponse: function(json, asset) {
         // prevent overwriting user's naming
-        console.log(json);
         if (!asset || !asset.name) asset.name = json.companyName;
         asset.address = [
           json.address,
@@ -136,7 +143,7 @@ export const resources = {
     1: {
       provider: providers.finnhub.provider,
       getUri: function({ asset }) {
-        if (!asset || !asset.ticker) return {};
+        checkTicker(asset);
         const uri = providers.finnhub.baseUrl + "scan/technical-indicator";
         const params = {
           symbol: asset.ticker,
@@ -155,7 +162,7 @@ export const resources = {
     1: {
       provider: providers.finnhub.provider,
       getUri: function({ asset, from, to }) {
-        if (!asset.ticker) return {};
+        checkTicker(asset);
         const uri = providers.finnhub.baseUrl + "major-development";
         const params = {
           symbol: asset.ticker,
@@ -193,8 +200,11 @@ export const resources = {
         const params = {};
         return { uri, params };
       },
-      handleResponse: function(json, { currencyList }) {
-        currencyList.push(...Object.keys(json.rates));
+      handleResponse: function(json, { exchangeRates }) {
+        //currencyList.push(...Object.keys(json.rates));
+        Object.keys(json.rates).forEach(rate => {
+          exchangeRates[rate] = {};
+        });
       }
     }
   }

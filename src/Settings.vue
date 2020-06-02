@@ -46,7 +46,7 @@
       ></v-text-field>-->
       <v-select
         v-model="$store.state.settings.currency"
-        :items="$store.state.currencyList"
+        :items="$store.getters.currencyList"
         label="Display currency"
         dense
         outlined
@@ -103,6 +103,7 @@ export default {
     },
     "$store.state.settings.currency": function() {
       this.$store.commit("setCurrency", this.$store.state.settings.currency);
+      this.$store.dispatch("getExchangeRates", this.assets);
     },
     "$store.state.settings.taxes": function() {
       this.$store.dispatch("updateInsights");
