@@ -48,7 +48,6 @@ export const resources = {
       handleResponse: function(json, { asset }) {
         if (!json[0]) throw Error("No data");
         asset.buyPrice = json[0]["close"];
-        asset.currency = "USD";
         asset.lastChecked = today;
       }
     },
@@ -92,9 +91,9 @@ export const resources = {
         return { uri, params };
       },
       handleResponse: function(json, { asset }) {
-        if (!json[0]) throw Error("No data");
-        asset.buyPrice = json[0]["close"];
-        asset.currency = "USD";
+        if (!json.c) throw Error("No data");
+        asset.lastPrice = json.c;
+        asset.timeseries[today] = asset.lastPrice;
         asset.lastChecked = today;
       }
     },
@@ -109,7 +108,7 @@ export const resources = {
       handleResponse: function(json, { asset }) {
         if (!asset.name) asset.name = json.companyName;
         asset.lastPrice = json.latestPrice;
-        asset.currency = "USD";
+        asset.timeseries[today] = asset.lastPrice;
         asset.lastChecked = today;
       }
     }
@@ -124,7 +123,7 @@ export const resources = {
         const params = {};
         return { uri, params };
       },
-      handleResponse: function(json, asset) {
+      handleResponse: function(json, { asset }) {
         // prevent overwriting user's naming
         if (!asset || !asset.name) asset.name = json.companyName;
         asset.address = [
@@ -136,6 +135,23 @@ export const resources = {
         ].join();
         asset.industry = json.industry;
         asset.description = json.description;
+      }
+    },
+    2: {
+      provider: providers.finnhub.provider,
+      getUri: function({ asset }) {
+        checkTicker(asset);
+        const uri = providers.finnhub.baseUrl + "stock/profile2";
+        const params = {
+          symbol: asset.ticker
+        };
+        return { uri, params };
+      },
+      handleResponse: function(json, { asset }) {
+        // prevent overwriting user's naming
+        if (!asset || !asset.name) asset.name = json.name;
+        asset.currency = json.currency;
+        asset.industry = json.finnhubIndustry;
       }
     }
   },

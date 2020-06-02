@@ -281,7 +281,7 @@ export default {
     },
     async getCompanyInfo() {
       this.loading = true;
-      this.asset.error = await API.requestHandler("quote", {
+      this.asset.error = await API.requestHandler("company", {
         asset: this.asset
       });
       // update the buy price if there is already a buy date
@@ -291,6 +291,9 @@ export default {
     async getBuyPrice() {
       this.loading = true;
       this.asset.error = await API.requestHandler("history", {
+        asset: this.asset
+      });
+      this.asset.error = await API.requestHandler("quote", {
         asset: this.asset
       });
       this.loading = false;
@@ -320,8 +323,7 @@ export default {
         this.loading = true;
         // get some additional data on the asset
         await API.requestHandler("signal", { asset: this.asset });
-        await API.requestHandler("company", { asset: this.asset });
-      // trim the timeseries of prices from buy to sell/current date
+        // trim the timeseries of prices from buy to sell/current date
         this.trim(this.asset);
         if (!this.asset.id) this.$store.commit("addAsset", this.asset);
         else this.$store.commit("updateAsset", this.asset);
