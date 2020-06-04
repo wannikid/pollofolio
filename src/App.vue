@@ -1,6 +1,6 @@
 <template>
   <v-app v-cloak class="noselect">
-    <v-app-bar app clipped-right color="white" light>
+    <v-app-bar app clipped-right color="yellow" light>
       <v-app-bar-nav-icon @click="$store.state.showSettings = !$store.state.showSettings"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <span class="brandFont">Pollofolio</span>
@@ -9,6 +9,7 @@
       <v-btn
         fab
         small
+        color="deep-purple accent-4"
         dark
         :class="{ 'heartbeat': $store.state.assets.length === 0 }"
         @click="newAsset()"

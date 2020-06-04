@@ -1,12 +1,13 @@
 <template>
   <div class="pb-6">
     <v-toolbar flat light class="mb-5">
-      <v-toolbar-title class="text-truncate font-weight-black headline">
-        <template v-if="asset.name">{{asset.name}}</template>
-        <template v-else>New Asset</template>
+      <v-toolbar-title>
+        <div v-if="asset.name" class="title font-weight-black text-truncate">{{asset.name}}</div>
+        <div v-if="!asset.name" class="title font-weight-black text-truncate">New Asset</div>
+        <div v-if="asset.lastChecked" class="caption">Last checked {{ asset.lastChecked }}</div>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn fab dark small @click="hideDetails()" color="grey darken-4">
+      <v-btn fab dark small @click="hideDetails()" color="deep-purple accent-4">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-toolbar>
