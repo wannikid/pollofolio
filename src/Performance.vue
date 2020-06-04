@@ -85,19 +85,19 @@ export default {
           suffix: "appCurrency"
         },
         {
-          name: "Total price change",
+          name: "Change",
           key: "totalChange",
           digits: 0,
           suffix: "appCurrency"
         },
         {
-          name: "Currency change",
+          name: "Currency effects",
           key: "forexChange",
           digits: 0,
           suffix: "appCurrency"
         },
         {
-          name: "Current value",
+          name: "Total value",
           key: "totalValue",
           digits: 0,
           suffix: "appCurrency"
