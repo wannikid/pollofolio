@@ -1,11 +1,10 @@
 <template>
   <div class="pb-6">
     <v-toolbar flat light class="mb-5">
-      <v-toolbar-title
-        v-if="asset.name"
-        class="text-truncate font-weight-black headline"
-      >{{asset.name}}</v-toolbar-title>
-      <v-toolbar-title v-else class="font-weight-black headline">New Asset</v-toolbar-title>
+      <v-toolbar-title class="text-truncate font-weight-black headline">
+        <template v-if="asset.name">{{asset.name}}</template>
+        <template v-else>New Asset</template>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn fab dark small @click="hideDetails()" color="grey darken-4">
         <v-icon>mdi-close</v-icon>
@@ -45,13 +44,11 @@ export default {
     Sparkline
   },
   props: {
-    //idx: Number,
     data: Object,
     required: true
   },
   data() {
     return {
-      //asset: new Asset(this.$store.state.assets[this.idx]),
       asset: this.data,
       panel: null
     };

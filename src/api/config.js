@@ -179,7 +179,7 @@ export const resources = {
       provider: providers.finnhub.provider,
       getUri: function({ asset, from, to }) {
         checkTicker(asset);
-        const uri = providers.finnhub.baseUrl + "major-development";
+        const uri = providers.finnhub.baseUrl + "company-news";
         const params = {
           symbol: asset.ticker,
           from: from,
@@ -188,7 +188,7 @@ export const resources = {
         return { uri, params };
       },
       handleResponse: function(json, { asset }) {
-        asset.news = json.majorDevelopment;
+        asset.news = json;
       }
     }
   },

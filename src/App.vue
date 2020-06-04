@@ -1,6 +1,6 @@
 <template>
   <v-app v-cloak class="noselect">
-    <v-app-bar app clipped-right color="black" dark>
+    <v-app-bar app clipped-right color="white" light>
       <v-app-bar-nav-icon @click="$store.state.showSettings = !$store.state.showSettings"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <span class="brandFont">Pollofolio</span>

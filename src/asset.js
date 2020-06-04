@@ -130,9 +130,6 @@ export default class Asset {
       for (let date of dates) this._timeseries[date] = val[date];
       if (this.lastChecked && this.lastPrice)
         this._timeseries[this.lastChecked] = this.lastPrice;
-      //this.buyPrice = this._timeseries[this.dateBuy];
-      //this.lastTrade = dates[dates.length - 1];
-      //this.lastPrice = this._timeseries[this.lastTrade];
     }
   }
 
@@ -339,8 +336,7 @@ export default class Asset {
     const hasNoChart = this.dates.length === 0 && this.isSold();
     // flag to prevent repeated API calls per day for assets with unknown tickers
     const checkedToday = this.lastChecked === today;
-    if ((hasNoTicker || hasNoPrice || hasNoChart) && !checkedToday)
-      return false;
+    if (hasNoTicker || hasNoPrice || hasNoChart || !checkedToday) return false;
     return true;
   }
 
