@@ -76,7 +76,7 @@
           &nbsp;
           <v-icon>mdi-twitter</v-icon>
         </div>
-        <div class>Follow evolution on Insta
+        <div class>Follow evolution on Instagram
           <v-btn icon href="https://www.instagram.com/pollofolio" target="_blank">
             <v-icon>mdi-instagram</v-icon>
           </v-btn>

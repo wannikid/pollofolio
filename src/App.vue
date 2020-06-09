@@ -15,8 +15,7 @@
           <div :key="kpi.name" class="body-2">{{ kpi.name }}</div>
         </transition>
       </v-toolbar-title>
-      <v-toolbar-title v-else>Pollofolio</v-toolbar-title>
-
+      <!--<v-toolbar-title v-else class="font-weight-bold deep-orange--text text--darken-4">POLLOFOLIO</v-toolbar-title>-->
       <v-spacer></v-spacer>
       <v-btn
         v-if="hasAssets"

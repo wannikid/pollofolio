@@ -152,7 +152,6 @@ let kpis = [
 export default new Vuex.Store({
   state: {
     selectedKpiIdx: 0,
-    selectedCategory: null,
     expandMode: false,
     showSettings: null,
     drawer: null,
