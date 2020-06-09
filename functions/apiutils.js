@@ -22,6 +22,7 @@ exports.callApi = function(uri, params, origin) {
       );
       res = await fetch(uri);
       responseText = await res.text();
+      if (responseText === "{}") responseText = "No data found.";
       resolve({
         statusCode: 200,
         headers,
