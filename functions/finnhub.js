@@ -6,5 +6,5 @@ exports.handler = async event => {
   let { uri, params } = JSON.parse(event.body);
   params.token = token;
   let response = await callApi(uri, params, origin);
-  return response !== {} ? response : "Unknown symbol";
+  return response !== "{}" ? response : "Unknown symbol";
 };
