@@ -7,7 +7,7 @@
       </span>
       <span
         class="d-flex justify-end pr-3"
-      >{{ asset.getPayoutSum() | toLocaleNumber(1) }} {{ $store.state.settings.currency }}</span>
+      >{{ asset.income | toLocaleNumber(1) }} {{ $store.state.settings.currency }}</span>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <div

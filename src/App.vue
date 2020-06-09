@@ -1,40 +1,55 @@
 <template>
   <v-app v-cloak class="noselect">
-    <v-app-bar app clipped-right color="yellow" light>
-      <v-app-bar-nav-icon @click="$store.state.showSettings = !$store.state.showSettings"></v-app-bar-nav-icon>
-      <v-toolbar-title>
-        <span class="brandFont">Pollofolio</span>
+    <v-app-bar app :prominent="hasAssets" clipped-right color="yellow accent-3" light>
+      <v-app-bar-nav-icon
+        color="deep-purple accent-2"
+        @click="$store.state.showSettings = !$store.state.showSettings"
+      ></v-app-bar-nav-icon>
+
+      <v-toolbar-title v-if="hasAssets">
+        <span class="d-flex mt-6">
+          <span class="numberFont">{{ kpi.value | toLocaleNumber(0)}}</span>
+          <span class="caption align-self-end mb-1">&nbsp;{{ getKpiUnit() }}</span>
+        </span>
+        <transition name="slide" mode="out-in">
+          <div :key="kpi.name" class="body-2">{{ kpi.name }}</div>
+        </transition>
       </v-toolbar-title>
+      <v-toolbar-title v-else>Pollofolio</v-toolbar-title>
+
       <v-spacer></v-spacer>
       <v-btn
-        fab
-        small
-        color="deep-purple accent-4"
+        v-if="hasAssets"
+        icon
+        color="deep-purple accent-3"
+        class="hidden-sm-and-up"
         dark
-        :class="{ 'heartbeat': $store.state.assets.length === 0 }"
+        @click="$store.state.expandMode = !$store.state.expandMode"
+      >
+        <v-icon>mdi-chart-areaspline-variant</v-icon>
+      </v-btn>
+      <v-btn
+        icon
+        color="deep-purple accent-3"
+        dark
+        :class="{ 'blink-2': !hasAssets }"
         @click="newAsset()"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
-      <template v-if="$store.state.assets.length > 0" v-slot:extension class="align-center">
-        <v-menu bottom left>
-          <template v-slot:activator="{ on }">
-            <v-btn text class="align-self-center mr-4" v-on="on">
-              {{ menuItems[activeMenuItem] }}
-              <v-icon right>mdi-menu-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list class="grey lighten-3">
-            <v-list-item
-              v-for="(item,id) of menuItems"
-              :key="id"
-              @click="setCategory(id, item)"
-            >{{ item }}</v-list-item>
-          </v-list>
-        </v-menu>
-        <v-spacer></v-spacer>
-        <v-switch hide-details v-model="$store.state.expandMode" label="Expand"></v-switch>
-      </template>
+      <v-btn
+        v-if="hasAssets"
+        small
+        color="deep-purple accent-3"
+        dark
+        absolute
+        bottom
+        right
+        fab
+        @click="nextKpi()"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <Settings v-if="$store.state.showSettings"/>
@@ -66,10 +81,7 @@ export default {
     Settings
   },
   data() {
-    return {
-      activeMenuItem: 0,
-      menuItems: ["Holding", "Already sold"]
-    };
+    return {};
   },
   created: async function() {
     //this.$store.dispatch("fetchBenchmarkData");
@@ -81,6 +93,9 @@ export default {
     this.$store.dispatch("getExchangeRates", this.assets);
   },
   computed: {
+    hasAssets() {
+      return this.assets.length > 0;
+    },
     assets() {
       return this.$store.state.assets.map(asset => new Asset(asset));
     },
@@ -88,21 +103,34 @@ export default {
       if (this.$vuetify.breakpoint.xsOnly) {
         return this.$vuetify.breakpoint.width;
       } else return 360;
+    },
+    kpi() {
+      return this.$store.getters.kpi;
     }
   },
   watch: {
     "$store.state.drawer": function() {
-      // close the right side drawer if open
+      // reset route to assets
       if (!this.$store.state.drawer && this.$route.name !== "assets")
         this.$router.push({ name: "assets" });
     },
-    "$store.state.assets": function() {
-      // trigger a change of category if there is no asset left in the current one
-      this.activeMenuItem = this.$store.getters.holdAssets.length > 0 ? 0 : 1;
-      this.$store.state.selectedCategory = this.menuItems[this.activeMenuItem];
+    "$store.state.selectedKpiIdx": {
+      immediate: true,
+      handler() {
+        const values = this.assets.map(asset => asset[this.kpi.key]);
+        this.$store.commit("setKpi", values);
+      }
     }
   },
   methods: {
+    nextKpi() {
+      this.$store.commit("incrementKpiIdx", 1);
+    },
+    getKpiUnit() {
+      if (this.kpi.unit === "appCurrency")
+        return this.$store.state.settings.currency;
+      else return this.kpi.unit;
+    },
     async fetchPortfolioData() {
       let promises = [];
       this.assets.forEach(asset => {
@@ -128,6 +156,9 @@ export default {
     },
     newAsset() {
       this.$router.push({ name: "add", params: { data: new Asset(null) } });
+    },
+    showInsights() {
+      this.$router.push({ name: "insights" });
     }
   }
 };
@@ -151,31 +182,23 @@ html {
   user-select: none;
 }
 
-.brandFont {
-  font-family: "Days One", sans-serif;
+.numberFont {
+  font-family: "Lato", sans-serif;
+  font-size: 24pt;
 }
 
-.v-application--wrap {
+.v-navigation-drawer__content {
   background: #ede7f6;
-  background: -webkit-linear-gradient(
-    to left,
-    #ede7f6,
-    #ffffff
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to left,
-    #ede7f6,
-    #ffffff
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to top, #ede7f6, #ffffff);
 }
 
-.heartbeat {
-  -webkit-animation: heartbeat 2s ease-in-out infinite both;
-  animation: heartbeat 2s ease-in-out infinite both;
+.slide-in-right {
+  -webkit-animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    both;
+  animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
-
 /* ----------------------------------------------
- * Generated by Animista on 2020-6-3 0:41:14
+ * Generated by Animista on 2020-6-7 20:56:50
  * Licensed under FreeBSD License.
  * See http://animista.net/license for more info. 
  * w: http://animista.net, t: @cssanimista
@@ -183,76 +206,83 @@ html {
 
 /**
  * ----------------------------------------
- * animation heartbeat
+ * animation slide-in-right
  * ----------------------------------------
  */
-@-webkit-keyframes heartbeat {
-  from {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-transform-origin: center center;
-    transform-origin: center center;
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
+@-webkit-keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0;
   }
-  10% {
-    -webkit-transform: scale(0.91);
-    transform: scale(0.91);
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
-  }
-  17% {
-    -webkit-transform: scale(0.98);
-    transform: scale(0.98);
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
-  }
-  33% {
-    -webkit-transform: scale(0.87);
-    transform: scale(0.87);
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
-  }
-  45% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
   }
 }
-@keyframes heartbeat {
-  from {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-transform-origin: center center;
-    transform-origin: center center;
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
+@keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0;
   }
-  10% {
-    -webkit-transform: scale(0.91);
-    transform: scale(0.91);
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
   }
-  17% {
-    -webkit-transform: scale(0.98);
-    transform: scale(0.98);
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
+}
+
+.blink-2 {
+  -webkit-animation: blink-2 1.9s infinite both;
+  animation: blink-2 1.9s infinite both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-6-8 1:30:55
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation blink-2
+ * ----------------------------------------
+ */
+@-webkit-keyframes blink-2 {
+  0% {
+    opacity: 1;
   }
-  33% {
-    -webkit-transform: scale(0.87);
-    transform: scale(0.87);
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
+  50% {
+    opacity: 0.2;
   }
-  45% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
+  100% {
+    opacity: 1;
   }
+}
+@keyframes blink-2 {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.slide-leave-active,
+.slide-enter-active {
+  transition: 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.slide-enter {
+  transform: translate(100%, 0);
+}
+.slide-leave-to {
+  transform: translate(-100%, 0);
 }
 </style>
 

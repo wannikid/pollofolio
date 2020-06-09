@@ -12,7 +12,7 @@
         class="body-2 my-2"
       >The yearly Rate of Return allows you to compare assets that you have owned for different lengths of time.</div>
       <P/>
-      <div v-for="detail in details" :key="detail.name">
+      <div v-for="detail in details" :key="detail.key">
         <div
           v-if="asset[detail.key] && suffix(detail.suffix)"
           class="d-flex justify-space-between pb-1 body-2"
@@ -115,7 +115,7 @@ export default {
           suffix: "appCurrency"
         },
         {
-          name: "Change",
+          name: "Change in %",
           key: "totalChangePct",
           digits: 1,
           suffix: "%"
@@ -131,6 +131,12 @@ export default {
           key: "roi",
           digits: 1,
           suffix: "%"
+        } /*
+        {
+          name: "Technical signal",
+          key: "signal",
+          digits: null,
+          suffix: ""
         }
         /*{
           name: "Relative change to benchmark",

@@ -147,8 +147,8 @@ export default class Asset {
   }
 
   get return() {
-    if (this.isSold()) this._return = this.totalChange + this.getPayoutSum();
-    else this._return = this.getPayoutSum() === 0 ? null : this.getPayoutSum();
+    if (this.isSold()) this._return = this.totalChange + this.income;
+    else this._return = this.income === 0 ? null : this.income;
     return this._return;
   }
 
@@ -263,7 +263,7 @@ export default class Asset {
     if (this.holdingPeriod > 365) {
       return (
         (Math.pow(
-          1 + (this.totalChange + this.getPayoutSum()) / this.totalBuy,
+          1 + (this.totalChange + this.income) / this.totalBuy,
           1 / (this.holdingPeriod / 365)
         ) -
           1) *
@@ -272,7 +272,7 @@ export default class Asset {
     } else {
       // any investment that does not have a track record of at least 365 days cannot "ratchet up" its performance to be annualized
       // https://www.investopedia.com/terms/a/annualized-total-return.asp
-      return ((this.totalChange + this.getPayoutSum()) / this.totalBuy) * 100;
+      return ((this.totalChange + this.income) / this.totalBuy) * 100;
     }
   }
 
@@ -308,7 +308,7 @@ export default class Asset {
     return null;
   }
 
-  getPayoutSum() {
+  get income() {
     let sum = 0;
     for (let date in this._payouts)
       sum += parseFloat(this._payouts[date].value);

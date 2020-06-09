@@ -1,15 +1,17 @@
 <template>
   <div class="pb-6">
-    <v-toolbar flat light class="mb-5">
-      <v-toolbar-title>
-        <div v-if="asset.name" class="title font-weight-black text-truncate">{{asset.name}}</div>
-        <div v-if="!asset.name" class="title font-weight-black text-truncate">New Asset</div>
-        <div v-if="asset.lastChecked" class="caption">Last checked {{ asset.lastChecked }}</div>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn fab dark small @click="hideDetails()" color="deep-purple accent-4">
-        <v-icon>mdi-close</v-icon>
+    <v-toolbar dense flat light>
+      <v-btn icon @click="hideDetails()">
+        <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
+      <!--<v-toolbar-title class="ml-2">
+        <div v-if="asset.name" class="headline font-weight-black text-truncate mt-3">{{asset.name}}</div>
+        <div v-if="!asset.name" class="headline font-weight-black text-truncate">New Asset</div>
+        <div
+          v-if="asset.lastChecked"
+          class="caption grey--text"
+        >Last checked {{ asset.lastChecked }}</div>
+      </v-toolbar-title>-->
     </v-toolbar>
     <v-alert
       v-if="asset.error"
@@ -18,7 +20,7 @@
       text
       type="info"
     >{{ asset.error }}</v-alert>
-    <v-card flat v-if="asset.prices.length > 0" class="mx-4" style="height:105px">
+    <v-card flat v-if="asset.prices.length > 0" class="mx-2 mt-2" style="height:105px">
       <Sparkline :values="asset.prices" height="95" :kpi="asset.totalChange"/>
     </v-card>
     <v-expansion-panels flat hover v-model="openPanel" tile accordion class="my-3">
@@ -27,7 +29,12 @@
       <router-view name="payouts" :data="asset"></router-view>
       <router-view name="form" :data="asset"></router-view>
     </v-expansion-panels>
-    <v-card outlined v-if="asset.industry && asset.id" class="mx-4 mb-4">
+    <v-card outlined v-if="asset.industry && asset.id" class="mx-2 mb-4">
+      <v-card-title class="text-truncate">
+        <template v-if="asset.name">{{asset.name}}</template>
+        <template v-else>New Asset</template>
+      </v-card-title>
+      <!--<div v-if="asset.lastChecked" class="caption grey--text">Last checked {{ asset.lastChecked }}</div>-->
       <v-card-subtitle class="blue--text">{{ asset.industry }}</v-card-subtitle>
       <v-card-text class="caption">{{ asset.description }}</v-card-text>
     </v-card>
@@ -36,9 +43,7 @@
 </template>
 
 <script>
-//import Asset from "./asset.js";
 import Sparkline from "./Sparkline";
-//import * as API from "./api";
 
 export default {
   components: {
@@ -89,4 +94,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.theme--light.v-expansion-panels .v-expansion-panel {
+  background-color: transparent;
+}
 </style>

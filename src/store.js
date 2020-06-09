@@ -10,8 +10,148 @@ const vuexPersist = new VuexPersist({
 
 Vue.use(Vuex);
 
+const methods = {
+  sum: function(array) {
+    const method = (acc, cur) => acc + cur;
+    return array.reduce(method, 0);
+  },
+  last: function(array) {
+    return array[array.length - 1];
+  },
+  monthlyMean: function(array) {
+    const method = (acc, cur) => acc + cur;
+    let sum = array.reduce(method, 0);
+    // 30 days per month on average
+    let avg = array.length >= 30 ? sum / (array.length / 30) : sum;
+    return isNaN(avg) ? 0 : avg;
+  },
+  lastChange: function(array) {
+    return array[array.length - 1] - array[array.length - 2];
+  }
+};
+
+let kpis = [
+  {
+    name: "Current balance",
+    subtitle: "The value of all your investments at this moment",
+    info: null,
+    method: "sum",
+    value: null,
+    key: "totalValue",
+    unit: "appCurrency"
+  } /*
+  {
+    name: "Last change",
+    subtitle: "How much you are up or down today.",
+    info: null,
+    method: "Object.values(timeseries",
+    key: "lastChange",
+    value: null,
+    unit: "appCurrency"
+  },*/,
+  {
+    name: "Total change",
+    subtitle: "How much your portfolio has changed.",
+    info: null,
+    key: "totalChange",
+    value: null,
+    method: "sum",
+    unit: "appCurrency"
+  },
+  {
+    name: "Invested",
+    subtitle: "For how much you have purchased the assets in your portfolio.",
+    info: null,
+    method: "sum",
+    value: null,
+    key: "totalBuy",
+    unit: "appCurrency"
+  },
+  {
+    name: "Return from trading",
+    subtitle: "Your gain/loss from selling assets.",
+    info: "https://www.investopedia.com/terms/g/gain.asp",
+    method: "sum",
+    value: null,
+    key: "return",
+    unit: "appCurrency"
+  },
+  {
+    name: "Income",
+    subtitle: "Your gain from receiving dividends.",
+    info: "https://www.investopedia.com/terms/g/gain.asp",
+    method: "sum",
+    value: null,
+    key: "income",
+    unit: "appCurrency"
+  } /*
+  {
+    name: "Avg. monthly income",
+    subtitle: "Average monthly change of your portfolio's valuation.",
+    info: null,
+    method: "monthlyMean",
+    value: null,
+    key: "avgPayout",
+    unit: "appCurrency"
+  },
+  {
+    name: "Avg. monthly change",
+    subtitle: "Average monthly change of your portfolio's valuation.",
+    info: null,
+    method: "monthlyMean",
+    value: null,
+    key: "avgChange",
+    unit: "appCurrency"
+  },
+  /*{
+    name: "Time-weighted",
+    chartkey: "TWR",
+    subtitle: "Compounded return over different holding periods",
+    info: "https://www.investopedia.com/terms/t/time-weightedror.asp",
+    values: [
+      {
+        method: "timeframeProduct",
+        value: null,
+        subtitle: "",
+        chartkey: "TWR"
+      }
+    ],
+    unit: "%"
+  },
+  {
+    name: "Taxes",
+    subtitle: "How much of your gains you need to let go of.",
+    info: null,
+    values: Object.values(this.$store.state.stats["Taxes EUR"]),
+    method: "sum",
+    kpi: null,
+    unit: this.$store.state.settings.currency
+  },*/,
+  {
+    name: "Missed Gain",
+    subtitle:
+      "What you missed out on by not selling your current assets at the highest price.",
+    info: null,
+    method: "sum",
+    value: null,
+    key: "missedGain",
+    unit: "appCurrency"
+  } /*
+  {
+    name: "Potential updside",
+    subtitle:
+      "Potential upside if the price of all your assets goes back up to its highest price in 52 weeks.",
+    info: null,
+    method: "sum",
+    value: null,
+    key: "diffToYearlyHigh",
+    unit: "appCurrency"
+  }*/
+];
+
 export default new Vuex.Store({
   state: {
+    selectedKpiIdx: 0,
     selectedCategory: null,
     expandMode: false,
     showSettings: null,
@@ -31,6 +171,13 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    incrementKpiIdx(state, value) {
+      state.selectedKpiIdx = (state.selectedKpiIdx + value) % kpis.length;
+    },
+    setKpi(state, values) {
+      let method = methods[kpis[state.selectedKpiIdx].method];
+      kpis[state.selectedKpiIdx].value = method(values);
+    },
     setExchangeRates(state, value) {
       state.exchangeRates = value;
     },
@@ -160,6 +307,9 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    kpi(state) {
+      return kpis[state.selectedKpiIdx];
+    },
     assetsIDs(state) {
       return state.assets.map(item => item._id);
     },

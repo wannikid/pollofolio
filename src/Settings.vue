@@ -61,22 +61,28 @@
       ></v-select>
 
       <v-subheader>About</v-subheader>
+      <div class="caption mb-5 px-2">
+        A not-so-serious prototype for tracking the performance of your stock
+        portfolio.
+        <a
+          href="https://iexcloud.io"
+        >Data provided by IEX Cloud</a>
+        and
+        <a href="https://finnhub.io/">Finnhub.io</a>
+        <P/>
+        <div class="font-weight-medium">
+          Made by
+          <a href="https://twitter.com/VanZelleb" target="_blank">VanZelleb</a>
+          &nbsp;
+          <v-icon>mdi-twitter</v-icon>
+        </div>
+        <div class>Follow evolution on Insta
+          <v-btn icon href="https://www.instagram.com/pollofolio" target="_blank">
+            <v-icon>mdi-instagram</v-icon>
+          </v-btn>
+        </div>
+      </div>
     </v-list>
-
-    <div class="caption px-4 mb-5">
-      A not-so-serious prototype for tracking the performance of your stock
-      portfolio.
-      <a
-        href="https://iexcloud.io"
-      >Data provided by IEX Cloud</a>
-      and
-      <a href="https://finnhub.io/">Finnhub.io</a>
-      <P/>
-      <span class="font-weight-medium">
-        Made by
-        <a href="https://twitter.com/VanZelleb" target="_blank">VanZelleb</a>
-      </span>
-    </div>
   </v-navigation-drawer>
 </template>
 
