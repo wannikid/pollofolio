@@ -8,8 +8,8 @@ export default class Asset {
     this.name = item._name;
     this.ticker = item._ticker;
     this.amount = item._amount;
-    this.totalBuy = item._totalBuy;
-    this.totalSell = item._totalSell;
+    this.buyValue = item._totalBuy;
+    this.sellValue = item._totalSell;
     this.dateBuy = item._dateBuy;
     this.dateSell = item._dateSell;
     this.timeseries = item._timeseries;
@@ -128,6 +128,7 @@ export default class Asset {
       let dates = Object.keys(val);
       dates.sort();
       for (let date of dates) this._timeseries[date] = val[date];
+      // manually set the last available info
       if (this.lastChecked && this.lastPrice)
         this._timeseries[this.lastChecked] = this.lastPrice;
     }
@@ -142,21 +143,26 @@ export default class Asset {
   }
 
   get lastChange() {
-    if (this.dates.length > 1) return this.lastChangePct * this.totalBuy;
+    if (this.dates.length > 1) return this.lastChangePct * this.buyValue;
+    return null;
+  }
+
+  get invested() {
+    if (!this.isSold()) return this.buyValue;
     return null;
   }
 
   get return() {
-    if (this.isSold()) this._return = this.totalChange + this.income;
-    else this._return = this.income === 0 ? null : this.income;
+    let sanitizedIncome = this.income ? this.income : 0;
+    if (this.isSold())
+      this._return = this.sellValue - this.buyValue + sanitizedIncome;
+    else this._return = sanitizedIncome;
     return this._return;
   }
 
   get diffToYearlyHigh() {
     if (!this.isSold() && this.yearlyHigh && this.lastPrice)
-      return (
-        (this.yearlyHigh / this.lastPrice) * this.totalValue - this.totalValue
-      );
+      return (this.yearlyHigh / this.lastPrice) * this.value - this.value;
     return null;
   }
 
@@ -168,24 +174,24 @@ export default class Asset {
     return null;
   }
 
-  get totalChangePct() {
-    if (!this.isSold()) return (this.totalChange / this.totalBuy) * 100;
+  get changePct() {
+    if (!this.isSold()) return (this.change / this.buyValue) * 100;
     return null;
   }
 
-  get totalBuy() {
+  get buyValue() {
     return this._totalBuy;
   }
 
-  set totalBuy(val) {
+  set buyValue(val) {
     this._totalBuy = val ? parseFloat(val) : "";
   }
 
-  get totalSell() {
+  get sellValue() {
     return this._totalSell;
   }
 
-  set totalSell(val) {
+  set sellValue(val) {
     this._totalSell = val ? parseFloat(val) : "";
   }
 
@@ -197,10 +203,10 @@ export default class Asset {
     this._amount = val ? parseFloat(val) : "";
   }
 
-  get totalValue() {
+  get value() {
     if (!this.isSold() && this.lastPrice)
       return (
-        (this.lastPrice / this.buyPrice) * this.totalBuy + this.forexChange
+        (this.lastPrice / this.buyPrice) * this.buyValue + this.forexChange
       );
     return null;
   }
@@ -211,7 +217,7 @@ export default class Asset {
 
   get buyPrice() {
     //if (this.lastTrade) return this._timeseries[this.dates[0]];
-    return this._buyPrice ? this._buyPrice : this.totalBuy / this.amount;
+    return this._buyPrice ? this._buyPrice : this.buyValue / this.amount;
   }
 
   get stopLoss() {
@@ -263,17 +269,16 @@ export default class Asset {
     if (this.holdingPeriod > 365) {
       return (
         (Math.pow(
-          1 + (this.totalChange + this.income) / this.totalBuy,
+          1 + this.return / this.buyValue,
           1 / (this.holdingPeriod / 365)
         ) -
           1) *
         100
       );
-    } else {
-      // any investment that does not have a track record of at least 365 days cannot "ratchet up" its performance to be annualized
-      // https://www.investopedia.com/terms/a/annualized-total-return.asp
-      return ((this.totalChange + this.income) / this.totalBuy) * 100;
     }
+    // any investment that does not have a track record of at least 365 days cannot "ratchet up" its performance to be annualized
+    // https://www.investopedia.com/terms/a/annualized-total-return.asp
+    else return (this.return / this.buyValue) * 100;
   }
 
   get relativeChange() {
@@ -292,9 +297,7 @@ export default class Asset {
         endPrice = store.state.settings.benchmark._timeseries[this.dateSell];
 
       if (startPrice && endPrice)
-        return (
-          this.totalChangePct - ((endPrice - startPrice) / startPrice) * 100
-        );
+        return this.changePct - ((endPrice - startPrice) / startPrice) * 100;
     }
     return null;
   }
@@ -302,9 +305,7 @@ export default class Asset {
   get missedGain() {
     if (this.lastPrice && this.highPrice)
       if (this.highPrice > this.lastPrice)
-        return (
-          (this.highPrice / this.lastPrice) * this.totalValue - this.totalValue
-        );
+        return (this.highPrice / this.lastPrice) * this.value - this.value;
     return null;
   }
 
@@ -349,10 +350,10 @@ export default class Asset {
     return this.stopLoss > this.lastPrice;
   }
 
-  get totalChange() {
-    if (this.isSold()) return this.totalSell - this.totalBuy;
+  get change() {
+    if (this.isSold()) return null;
     if (this.lastPrice)
-      return (this.lastPrice / this.buyPrice) * this.totalBuy - this.totalBuy;
+      return (this.lastPrice / this.buyPrice) * this.buyValue - this.buyValue;
     return null;
   }
 
@@ -367,8 +368,8 @@ export default class Asset {
         let buyRate = currencyRates[this.dateBuy];
         let changeRatio = buyRate / lastRate;
         return (
-          (this.lastPrice / this.buyPrice) * this.totalBuy * changeRatio -
-          (this.lastPrice / this.buyPrice) * this.totalBuy
+          (this.lastPrice / this.buyPrice) * this.buyValue * changeRatio -
+          (this.lastPrice / this.buyPrice) * this.buyValue
         );
       }
     }

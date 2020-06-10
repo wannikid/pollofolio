@@ -30,14 +30,28 @@ const methods = {
   }
 };
 
+const notNull = val => {
+  return !!val;
+};
+const isNull = val => {
+  return !val;
+};
+
 let kpis = [
   {
-    name: "Current balance 🏦",
-    subtitle: "The value of all your investments at this moment",
-    info: null,
+    name: "Current balance",
+    icon: "🏦",
+    assetCriteria: [
+      {
+        key: "value",
+        test: notNull
+      }
+    ],
+    subtitle: "The current value of your assets.",
+    info: "https://www.investopedia.com/terms/m/marketvalue.asp",
     method: "sum",
     value: null,
-    key: "totalValue",
+    key: "value",
     unit: "appCurrency"
   } /*
   {
@@ -59,39 +73,76 @@ let kpis = [
     unit: "appCurrency"
   },*/,
   {
-    name: "Total change 📈",
-    subtitle: "How much your portfolio has changed.",
-    info: null,
-    key: "totalChange",
+    name: "Change",
+    icon: "📈",
+    subtitle: "Change in your assets' value.",
+    info: "https://www.investopedia.com/terms/c/change.asp",
+    key: "change",
+    assetCriteria: [
+      {
+        key: "change",
+        test: notNull
+      }
+    ],
     value: null,
     method: "sum",
     unit: "appCurrency"
   },
   {
-    name: "Invested 🧾",
-    subtitle: "For how much you have purchased the assets in your portfolio.",
-    info: null,
+    name: "Invested",
+    icon: "🧾",
+    subtitle: "Initial value of your assets.",
+    info: "https://www.investopedia.com/terms/i/investment.asp",
     method: "sum",
     value: null,
-    key: "totalBuy",
+    key: "invested",
+    assetCriteria: [
+      {
+        key: "buyValue",
+        test: notNull
+      },
+      {
+        key: "dateSell",
+        test: isNull
+      }
+    ],
     unit: "appCurrency"
   },
   {
-    name: "Return from trading 💸",
-    subtitle: "Your gain/loss from selling assets.",
-    info: "https://www.investopedia.com/terms/g/gain.asp",
+    name: "Returns",
+    icon: "💰",
+
+    subtitle: "Gain/Loss from sold assets & dividends.",
+    info: "https://www.investopedia.com/terms/r/return.asp",
     method: "sum",
     value: null,
     key: "return",
+    assetCriteria: [
+      {
+        key: "return",
+        test: notNull
+      }
+    ],
     unit: "appCurrency"
   },
   {
-    name: "Income 💰",
-    subtitle: "Your gain from receiving dividends.",
-    info: "https://www.investopedia.com/terms/g/gain.asp",
+    name: "Income",
+    icon: "🗓️",
+    subtitle: "Income from receiving dividends.",
+    info: "https://www.investopedia.com/terms/d/dividend.asp",
     method: "sum",
     value: null,
     key: "income",
+    assetCriteria: [
+      {
+        key: "income",
+        test: notNull
+      },
+      {
+        key: "dateSell",
+        test: isNull
+      }
+    ],
     unit: "appCurrency"
   } /*
   {
@@ -137,13 +188,19 @@ let kpis = [
     unit: this.$store.state.settings.currency
   },*/,
   {
-    name: "Missed Gain 😢",
-    subtitle:
-      "What you missed out on by not selling your current assets at the highest price.",
+    name: "Missed Gain",
+    icon: "😢",
+    subtitle: "Drop in value from highest point.",
     info: null,
     method: "sum",
     value: null,
     key: "missedGain",
+    assetCriteria: [
+      {
+        key: "missedGain",
+        test: notNull
+      }
+    ],
     unit: "appCurrency"
   } /*
   {

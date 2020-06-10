@@ -21,36 +21,11 @@
           <span>{{ asset[detail.key] | toLocaleNumber(detail.digits) }}{{ suffix(detail.suffix) }}</span>
         </div>
       </div>
-      <!--<div :style="{height: chartHeight + 'px'}" class="mt-5">
-        <div v-if="asset.timeseries.length >= 2">
-          <v-sparkline
-            :value="assetLine"
-            :fill="true"
-            :gradient="['rgba(0,200,0,0.9)', 'rgba(173,216,230,0.4)']"
-            :smooth="true"
-            :height="assetHeight"
-            class="px-0"
-            :style="assetLineStyle"
-          ></v-sparkline>
-          <v-sparkline
-            class="px-0"
-            :value="benchmarkLine"
-            :fill="false"
-            :gradient="['orange']"
-            :smooth="true"
-            :line-width="1.0"
-            :height="benchmarkHeight"
-            :style="benchmarkLineStyle"
-          ></v-sparkline>
-        </div>
-      </div>-->
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
 
 <script>
-//import Asset from "./asset.js";
-
 export default {
   props: {
     data: Object,
@@ -80,13 +55,13 @@ export default {
         },
         {
           name: "Invested value",
-          key: "totalBuy",
+          key: "buyValue",
           digits: 0,
           suffix: "appCurrency"
         },
         {
           name: "Change",
-          key: "totalChange",
+          key: "change",
           digits: 0,
           suffix: "appCurrency"
         },
@@ -97,8 +72,8 @@ export default {
           suffix: "appCurrency"
         },
         {
-          name: "Total value",
-          key: "totalValue",
+          name: "Current value",
+          key: "value",
           digits: 0,
           suffix: "appCurrency"
         },
@@ -147,106 +122,9 @@ export default {
       ]
     };
   },
-  created: function() {
-    //if (!this.asset.lastPrice)
-    //this.$store.state.bannerText = "No price information available.";
-  },
+  created: function() {},
   mounted: function() {},
-  computed: {
-    /*,
-    benchmark: function() {
-      return new Asset(this.$store.state.settings.benchmark).trim(
-        this.asset.dateBuy,
-        this.asset.dateSell
-      );
-    },
-    benchmarkLine: function() {
-      let prices = Object.values(this.benchmark._timeseries);
-      return prices.map(price => {
-        return price / this.benchmark._timeseries[this.asset.dateBuy] - 1;
-      });
-    },
-    assetLine: function() {
-      let prices = Object.values(this.asset._timeseries);
-      return prices.map(price => {
-        return price / this.asset._timeseries[this.asset.dateBuy] - 1;
-      });
-    },
-    assetBottomDiff: function() {
-      // determine if the benchmark has a negative minimum and adjust the bottom-margin for the asset accordingly
-      let diff = 0;
-      let min = Math.min(...Object.values(this.benchmarkLine));
-      let max = Math.max(...Object.values(this.benchmarkLine));
-      let maxDiff = max + Math.abs(min);
-      if (min < 0)
-        diff = Math.round((Math.abs(min) / maxDiff) * this.benchmarkHeight);
-      return diff;
-    },
-    benchmarkBottomDiff: function() {
-      // determine if the asset has a negative minimum and adjust the bottom-margin for the benchmark accordingly
-      let diff = 0;
-      let min = Math.min(...Object.values(this.assetLine));
-      let max = Math.max(...Object.values(this.assetLine));
-      let maxDiff = max + Math.abs(min);
-      if (min < 0)
-        diff = Math.round((Math.abs(min) / maxDiff) * this.assetHeight);
-      return diff;
-    },
-    assetLineStyle: function() {
-      let diff = 0;
-      if (this.assetBottomDiff > this.benchmarkBottomDiff)
-        diff = this.assetBottomDiff - this.benchmarkBottomDiff;
-      else diff = 0;
-      return {
-        position: "absolute",
-        bottom: diff + "px",
-        left: 0 + "px",
-        right: 0 + "px"
-      };
-    },
-    benchmarkLineStyle: function() {
-      let diff = 0;
-      if (this.assetBottomDiff > this.benchmarkBottomDiff) diff = 0;
-      else diff = this.benchmarkBottomDiff - this.assetBottomDiff;
-      return {
-        position: "absolute",
-        bottom: diff + "px",
-        left: 0 + "px",
-        right: 0 + "px",
-        zIndex: 10
-      };
-    },
-    maxDiffAsset: function() {
-      let min = Math.min(...Object.values(this.assetLine));
-      let max = Math.max(...Object.values(this.assetLine));
-      return max + Math.abs(min);
-    },
-    maxDiffBenchmark: function() {
-      let min = Math.min(...Object.values(this.benchmarkLine));
-      let max = Math.max(...Object.values(this.benchmarkLine));
-      return max + Math.abs(min);
-    },
-    assetHeight: function() {
-      let ratio = this.maxDiffAsset / this.maxDiffBenchmark;
-      // if the ratio bigger than 1, the asset should take the full height of the chart = 100px
-      if (ratio > 1) return 100;
-      else return Math.round(100 * ratio);
-    },
-    benchmarkHeight: function() {
-      let ratio = this.maxDiffBenchmark / this.maxDiffAsset;
-      // if the ratio bigger than 1, the asset should take the full height of the chart = 100px
-      if (ratio > 1) return 100;
-      else return Math.round(100 * ratio);
-    },
-    chartHeight: function() {
-      let abs = Math.abs(this.benchmarkBottomDiff - this.assetBottomDiff);
-      let a = this.benchmarkHeight + abs;
-      let b = this.assetHeight + abs;
-      let c = a > b ? a : b;
-      let d = this.benchmarkHeight + this.assetHeight;
-      return c > d ? d : c;
-    }*/
-  },
+  computed: {},
   watch: {},
   methods: {
     suffix: function(suffix) {

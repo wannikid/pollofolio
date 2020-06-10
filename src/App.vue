@@ -116,12 +116,22 @@ export default {
     "$store.state.selectedKpiIdx": {
       immediate: true,
       handler() {
-        const values = this.assets.map(asset => asset[this.kpi.key]);
+        const filtreredArray = this.assets.filter(asset =>
+          this.meetsCriteria(asset)
+        );
+        const values = filtreredArray.map(asset => asset[this.kpi.key]);
         this.$store.commit("setKpi", values);
       }
     }
   },
   methods: {
+    meetsCriteria(asset) {
+      let results = [];
+      this.kpi.assetCriteria.forEach(criteria => {
+        results.push(criteria.test(asset[criteria.key]));
+      });
+      return results.includes(false) ? false : true;
+    },
     nextKpi() {
       this.$store.commit("incrementKpiIdx", 1);
     },
@@ -147,11 +157,6 @@ export default {
         this.$store.commit("setAssets", this.assets);
         this.$store.dispatch("updateInsights");
       }
-    },
-    setCategory(id, item) {
-      this.activeMenuItem = id;
-      this.$store.state.selectedCategory = item;
-      this.$store.state.drawer = false;
     },
     newAsset() {
       this.$router.push({ name: "add", params: { data: new Asset(null) } });

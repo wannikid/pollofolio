@@ -108,7 +108,7 @@
               dense
               outlined
               persistent-hint
-              v-model.number="asset.totalBuy"
+              v-model.number="asset.buyValue"
               placeholder=" "
               type="number"
               maxlength="10"
@@ -155,7 +155,7 @@
                 dense
                 outlined
                 persistent-hint
-                v-model.number="asset.totalSell"
+                v-model.number="asset.sellValue"
                 hint="Total sell value"
                 placeholder=" "
                 type="number"

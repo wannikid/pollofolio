@@ -4,14 +4,6 @@
       <v-btn icon @click="hideDetails()">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <!--<v-toolbar-title class="ml-2">
-        <div v-if="asset.name" class="headline font-weight-black text-truncate mt-3">{{asset.name}}</div>
-        <div v-if="!asset.name" class="headline font-weight-black text-truncate">New Asset</div>
-        <div
-          v-if="asset.lastChecked"
-          class="caption grey--text"
-        >Last checked {{ asset.lastChecked }}</div>
-      </v-toolbar-title>-->
     </v-toolbar>
     <v-alert
       v-if="asset.error"
@@ -30,11 +22,10 @@
       <router-view name="form" :data="asset"></router-view>
     </v-expansion-panels>
     <v-card outlined v-if="asset.industry && asset.id" class="mx-2 mb-4">
-      <v-card-title class="text-truncate">
-        <template v-if="asset.name">{{asset.name}}</template>
+      <v-card-title>
+        <template v-if="asset.name" class="text-truncate">{{asset.name}}</template>
         <template v-else>New Asset</template>
       </v-card-title>
-      <!--<div v-if="asset.lastChecked" class="caption grey--text">Last checked {{ asset.lastChecked }}</div>-->
       <v-card-subtitle class="blue--text">{{ asset.industry }}</v-card-subtitle>
       <v-card-text class="caption">{{ asset.description }}</v-card-text>
     </v-card>

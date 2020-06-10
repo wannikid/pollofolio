@@ -8,7 +8,7 @@
         <img alt="chicken logo" src="../public/images/pollofront.webp" width="290px">
       </v-container>
       <template v-else>
-        <v-menu bottom left>
+        <!--<v-menu bottom left>
           <template v-slot:activator="{ on }">
             <v-btn text class="align-self-center my-3 ml-2" color="deep-purple accent-4" v-on="on">
               {{ activeFilter }}
@@ -18,58 +18,73 @@
           <v-list class="grey lighten-3">
             <v-list-item v-for="(name,id) of filters" :key="id" @click="setFilter(name)">{{ name }}</v-list-item>
           </v-list>
-        </v-menu>
-        <template v-if="filteredAssets.length > 0">
-          <template v-for="(item, idx) of assets">
-            <v-alert
-              v-if="matchesFilter(item)"
-              :key="`asset-${idx}`"
-              :color="item.totalChange > 0 ? 'green accent-2' : 'red accent-2'"
-              border="left"
-              elevation="2"
-              colored-border
-              class="pl-0 mx-2 mb-2 itemBg"
-              v-on:click.native="showDetails(item)"
+        </v-menu>-->
+        <v-list-item class="px-2 my-2">
+          <v-list-item-avatar class="mr-1">
+            <v-btn icon :href="kpi.info" target="_blank" class>
+              <v-icon :color="kpi.info ? 'blue' : 'grey lighten-1'">mdi-head-question-outline</v-icon>
+            </v-btn>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-subtitle v-html="kpi.subtitle" :key="kpi.key"></v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <template v-for="(item, idx) of filteredAssets()">
+          <v-alert
+            :key="`asset-${idx}`"
+            :color="item.change > 0 ? 'green accent-2' : 'red accent-2'"
+            border="left"
+            elevation="2"
+            colored-border
+            class="pl-0 mx-2 mb-2 itemBg"
+            v-on:click.native="showDetails(item)"
+          >
+            <v-list-item>
+              <v-list-item-content
+                class="font-weight-bold grey--text text--darken-4 py-0 align-start"
+              >{{ item.name }}</v-list-item-content>
+
+              <v-list-item-action class="my-0">
+                <div class="numberFont">
+                  {{ item[kpi.key] | toLocaleNumber(0) }}
+                  <span
+                    class="caption"
+                  >&nbsp;{{ getKpiUnit() }}</span>
+                </div>
+                <v-list-item-action-text class="body-1" v-if="expandAssets">
+                  <span v-if="item.prices.length === 0" class="ml-2">🔍</span>
+                  <span v-if="item.hasAlarm()" class="ml-2">⏰</span>
+                  <span v-if="item.forexChange" class="ml-2">💱</span>
+                  <span v-if="item.return" class="ml-2">💰</span>
+                  <span
+                    v-if="item.signal && item.signal.toUpperCase().includes('BUY')"
+                    class="ml-2"
+                  >👍</span>
+                  <span
+                    v-if="item.signal && item.signal.toUpperCase().includes('SELL')"
+                    class="ml-2"
+                  >👎</span>
+                </v-list-item-action-text>
+              </v-list-item-action>
+            </v-list-item>
+            <div
+              v-if="expandAssets && item.prices.length > 1"
+              class="hidden-sm-and-up mt-0 pl-2"
+              style="height:55px"
             >
-              <v-list-item>
-                <v-list-item-content
-                  class="font-weight-bold grey--text text--darken-4"
-                >{{ item.name }}</v-list-item-content>
-                <!--<span v-if="item.prices.length === 0" class="ml-2">🔍</span>
-                <span v-if="item.hasAlarm()" class="ml-2">⏰</span>
-                <span v-if="item.forexChange" class="ml-2">💱</span>
-                <span v-if="item.return" class="ml-2">💰</span>
-                <span
-                  v-if="item.signal && item.signal.toUpperCase().includes('BUY')"
-                  class="ml-2"
-                >👍</span>
-                <span
-                  v-if="item.signal && item.signal.toUpperCase().includes('SELL')"
-                  class="ml-2"
-                >👎</span>-->
-                <v-list-item-action>
-                  <span class="numberFont">
-                    {{ item[kpi.key] ? item[kpi.key] : 0 | toLocaleNumber(0) }}
-                    <span
-                      class="caption"
-                    >&nbsp;{{ getKpiUnit() }}</span>
-                  </span>
-                </v-list-item-action>
-              </v-list-item>
-              <div
-                v-show="expandAssets && item.prices.length > 0"
-                class="hidden-sm-and-up mt-3 pl-2"
-                style="height:55px"
-              >
-                <Sparkline :values="item.prices" height="50" :kpi="item.totalChange"/>
-              </div>
-            </v-alert>
-          </template>
+              <!--<v-list-item-content
+                v-if="item.lastChecked"
+                class="caption grey--text"
+              >Updated {{ item.lastChecked }}</v-list-item-content>-->
+              <Sparkline :values="item.prices" height="50" :kpi="item.change"/>
+            </div>
+          </v-alert>
         </template>
-        <v-container v-else class="text-center">
+        <!--<v-container v-else class="text-center">
           <div class="title font-weight-light font-italic my-8">Nothing here</div>
           <img alt="app logo" src="../public/images/pollofront.webp" width="100px">
-        </v-container>
+        </v-container>-->
       </template>
     </v-content>
   </div>
@@ -99,6 +114,8 @@ export default {
     assets: {
       immediate: true,
       handler() {
+        //if (this.assets.length > 0) this.$store.state.selectedKpiIdx = 0;
+
         this.activeFilter =
           this.$store.getters.holdAssets.length > 0
             ? "Holding"
@@ -107,11 +124,6 @@ export default {
     }
   },
   computed: {
-    filteredAssets() {
-      if (this.activeFilter === "Holding")
-        return this.$store.getters.holdAssets;
-      else return this.$store.getters.soldAssets;
-    },
     kpi() {
       return this.$store.getters.kpi;
     },
@@ -126,6 +138,20 @@ export default {
     }
   },
   methods: {
+    filteredAssets() {
+      let filtered = [];
+      this.assets.forEach(asset => {
+        if (asset[this.kpi.key]) filtered.push(asset);
+      });
+      return filtered;
+    },
+    /*meetsCriteria(asset) {
+      //let results = [];
+      this.kpi.assetCriteria.forEach(criteria => {
+        if (!criteria.test(asset[criteria.key])) return false;
+      });
+      return true;
+    },*/
     getKpiUnit() {
       if (this.kpi.unit === "appCurrency")
         return this.$store.state.settings.currency;
@@ -179,5 +205,34 @@ export default {
     #ede7f6,
     #ffffff
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-6-10 10:22:31
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation flip-horizontal-bottom
+ * ----------------------------------------
+ */
+@keyframes flip {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.flip-enter-active {
+  animation: flip 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
 }
 </style>

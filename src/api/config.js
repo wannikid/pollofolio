@@ -48,6 +48,7 @@ export const resources = {
       handleResponse: function(json, { asset }) {
         if (!json[0]) throw Error("No data");
         asset.buyPrice = json[0]["close"];
+        asset._timeseries[asset.dateBuy] = asset.buyPrice;
         asset.lastChecked = today;
       }
     },
