@@ -32,7 +32,7 @@ const methods = {
 
 let kpis = [
   {
-    name: "Current balance",
+    name: "Current balance 🏦",
     subtitle: "The value of all your investments at this moment",
     info: null,
     method: "sum",
@@ -48,9 +48,18 @@ let kpis = [
     key: "lastChange",
     value: null,
     unit: "appCurrency"
+  },
+    {
+    name: "Forex effects",
+    subtitle: "How much you are up or down today.",
+    info: null,
+    method: "Object.values(timeseries",
+    key: "lastChange",
+    value: null,
+    unit: "appCurrency"
   },*/,
   {
-    name: "Total change",
+    name: "Total change 📈",
     subtitle: "How much your portfolio has changed.",
     info: null,
     key: "totalChange",
@@ -59,7 +68,7 @@ let kpis = [
     unit: "appCurrency"
   },
   {
-    name: "Invested",
+    name: "Invested 🧾",
     subtitle: "For how much you have purchased the assets in your portfolio.",
     info: null,
     method: "sum",
@@ -68,7 +77,7 @@ let kpis = [
     unit: "appCurrency"
   },
   {
-    name: "Return from trading",
+    name: "Return from trading 💸",
     subtitle: "Your gain/loss from selling assets.",
     info: "https://www.investopedia.com/terms/g/gain.asp",
     method: "sum",
@@ -77,7 +86,7 @@ let kpis = [
     unit: "appCurrency"
   },
   {
-    name: "Income",
+    name: "Income 💰",
     subtitle: "Your gain from receiving dividends.",
     info: "https://www.investopedia.com/terms/g/gain.asp",
     method: "sum",
@@ -128,7 +137,7 @@ let kpis = [
     unit: this.$store.state.settings.currency
   },*/,
   {
-    name: "Missed Gain",
+    name: "Missed Gain 😢",
     subtitle:
       "What you missed out on by not selling your current assets at the highest price.",
     info: null,

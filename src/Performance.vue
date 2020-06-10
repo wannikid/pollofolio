@@ -121,7 +121,7 @@ export default {
           suffix: "%"
         },
         {
-          name: "Return (incl. payouts)",
+          name: "Return (incl. income)",
           key: "return",
           digits: 0,
           suffix: "appCurrency"

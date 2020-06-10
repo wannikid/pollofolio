@@ -12,7 +12,7 @@
           <span class="caption align-self-end mb-1">&nbsp;{{ getKpiUnit() }}</span>
         </span>
         <transition name="slide" mode="out-in">
-          <div :key="kpi.name" class="body-2">{{ kpi.name }}</div>
+          <div :key="kpi.name" class="body-1">{{ kpi.name }}</div>
         </transition>
       </v-toolbar-title>
       <!--<v-toolbar-title v-else class="font-weight-bold deep-orange--text text--darken-4">POLLOFOLIO</v-toolbar-title>-->

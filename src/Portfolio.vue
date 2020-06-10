@@ -32,10 +32,10 @@
               v-on:click.native="showDetails(item)"
             >
               <v-list-item>
-                <v-list-item-content>
-                  <div class="font-weight-bold grey--text text--darken-4">{{ item.name }}</div>
-                </v-list-item-content>
-                <span v-if="item.prices.length === 0" class="ml-2">🔍</span>
+                <v-list-item-content
+                  class="font-weight-bold grey--text text--darken-4"
+                >{{ item.name }}</v-list-item-content>
+                <!--<span v-if="item.prices.length === 0" class="ml-2">🔍</span>
                 <span v-if="item.hasAlarm()" class="ml-2">⏰</span>
                 <span v-if="item.forexChange" class="ml-2">💱</span>
                 <span v-if="item.return" class="ml-2">💰</span>
@@ -46,10 +46,15 @@
                 <span
                   v-if="item.signal && item.signal.toUpperCase().includes('SELL')"
                   class="ml-2"
-                >👎</span>
-                <v-list-item-action
-                  class="numberFont"
-                >{{ item[kpi.key] ? item[kpi.key] : 0 | toLocaleNumber(0) }}&nbsp;{{ getKpiUnit() }}</v-list-item-action>
+                >👎</span>-->
+                <v-list-item-action>
+                  <span class="numberFont">
+                    {{ item[kpi.key] ? item[kpi.key] : 0 | toLocaleNumber(0) }}
+                    <span
+                      class="caption"
+                    >&nbsp;{{ getKpiUnit() }}</span>
+                  </span>
+                </v-list-item-action>
               </v-list-item>
               <div
                 v-show="expandAssets && item.prices.length > 0"
