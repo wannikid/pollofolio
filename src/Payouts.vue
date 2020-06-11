@@ -5,9 +5,10 @@
         <v-icon class="pl-0 pr-3 black--text">mdi-cash-usd-outline</v-icon>
         <span class="font-weight-medium">Income</span>
       </span>
-      <span
-        class="d-flex justify-end pr-3"
-      >{{ asset.income | toLocaleNumber(1) }} {{ $store.state.settings.currency }}</span>
+      <!--<span class="d-flex justify-end pr-3">
+        <span class="align-self-center">{{ asset.income | toLocaleNumber(1) }}</span>
+        <span class="caption">&nbsp;{{ $store.state.settings.currency }}</span>
+      </span>-->
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <div
@@ -85,8 +86,6 @@
 </template>
 
 <script>
-//import Asset from "./asset.js";
-
 export default {
   props: {
     data: Object,
@@ -135,7 +134,7 @@ export default {
       else return null;
       return (
         (this.asset._payouts[date].value /
-          (priceIncrRatio * this.asset.totalBuy)) *
+          (priceIncrRatio * this.asset.buyValue)) *
         100
       );
     },

@@ -5,7 +5,7 @@
         <v-icon class="pl-0 pr-3 black--text">mdi-finance</v-icon>
         <span class="font-weight-medium">Performance</span>
       </span>
-      <span v-if="asset.roi" class="d-flex justify-end pr-3">{{ asset.roi | toLocaleNumber(1) }} %</span>
+      <!--<span v-if="asset.roi" class="d-flex justify-end pr-3">{{ asset.roi | toLocaleNumber(1) }} %</span>-->
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <div
@@ -91,7 +91,7 @@ export default {
         },
         {
           name: "Change in %",
-          key: "totalChangePct",
+          key: "changePct",
           digits: 1,
           suffix: "%"
         },

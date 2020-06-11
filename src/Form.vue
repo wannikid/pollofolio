@@ -120,53 +120,51 @@
           </v-col>
         </v-row>
 
+        <v-row v-if="soldSwitch || asset.isSold()">
+          <v-col cols="6" class="py-0">
+            <v-dialog v-model="sellModal" width="290px">
+              <v-date-picker
+                no-title
+                v-model="asset.dateSell"
+                :allowed-dates="allowedDates"
+                @input="sellModal = false;"
+              ></v-date-picker>
+            </v-dialog>
+            <v-text-field
+              dense
+              outlined
+              persistent-hint
+              readonly
+              v-model="asset.dateSell"
+              type="date"
+              @click="sellModal=true"
+              :rules="[rules.dateSellRequired, rules.sellAfterBuy, rules.noFutureDate]"
+              placeholder
+              hint="Sell date"
+            ></v-text-field>
+          </v-col>
+          <v-col class="py-0">
+            <v-text-field
+              dense
+              outlined
+              persistent-hint
+              v-model.number="asset.sellValue"
+              hint="Total sell value"
+              placeholder=" "
+              type="number"
+              maxlength="10"
+              min="0"
+              :prefix="$store.state.settings.currency"
+              :rules="[rules.totalSellRequired]"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
         <v-row v-if="!asset.isSold()">
           <v-col class="py-0">
             <v-switch dense v-model="soldSwitch" label="I sold it"></v-switch>
           </v-col>
         </v-row>
-
-        <template v-if="soldSwitch || asset.isSold()">
-          <v-row>
-            <v-col cols="6" class="py-0">
-              <v-dialog v-model="sellModal" width="290px">
-                <v-date-picker
-                  no-title
-                  v-model="asset.dateSell"
-                  :allowed-dates="allowedDates"
-                  @input="sellModal = false;"
-                ></v-date-picker>
-              </v-dialog>
-              <v-text-field
-                dense
-                outlined
-                persistent-hint
-                readonly
-                v-model="asset.dateSell"
-                type="date"
-                @click="sellModal=true"
-                :rules="[rules.dateSellRequired, rules.sellAfterBuy, rules.noFutureDate]"
-                placeholder
-                hint="Sell date"
-              ></v-text-field>
-            </v-col>
-            <v-col class="py-0">
-              <v-text-field
-                dense
-                outlined
-                persistent-hint
-                v-model.number="asset.sellValue"
-                hint="Total sell value"
-                placeholder=" "
-                type="number"
-                maxlength="10"
-                min="0"
-                :prefix="$store.state.settings.currency"
-                :rules="[rules.totalSellRequired]"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </template>
       </v-form>
       <v-row justify="center">
         <v-dialog v-model="dialog" persistent max-width="300">
@@ -195,7 +193,7 @@
 
       <v-btn
         :loading="loading"
-        class="mt-4 white--text"
+        class="mt-3 white--text"
         color="deep-purple accent-4"
         block
         :disabled="disableSaving"

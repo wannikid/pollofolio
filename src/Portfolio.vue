@@ -52,7 +52,7 @@
                     class="caption"
                   >&nbsp;{{ getKpiUnit() }}</span>
                 </div>
-                <v-list-item-action-text class="body-1" v-if="expandAssets">
+                <!--<v-list-item-action-text class="body-1" v-if="expandAssets">
                   <span v-if="item.prices.length === 0" class="ml-2">🔍</span>
                   <span v-if="item.hasAlarm()" class="ml-2">⏰</span>
                   <span v-if="item.forexChange" class="ml-2">💱</span>
@@ -65,7 +65,7 @@
                     v-if="item.signal && item.signal.toUpperCase().includes('SELL')"
                     class="ml-2"
                   >👎</span>
-                </v-list-item-action-text>
+                </v-list-item-action-text>--->
               </v-list-item-action>
             </v-list-item>
             <div
@@ -110,19 +110,7 @@ export default {
   },
   created: function() {},
   mounted: function() {},
-  watch: {
-    assets: {
-      immediate: true,
-      handler() {
-        //if (this.assets.length > 0) this.$store.state.selectedKpiIdx = 0;
-
-        this.activeFilter =
-          this.$store.getters.holdAssets.length > 0
-            ? "Holding"
-            : "Already sold";
-      }
-    }
-  },
+  watch: {},
   computed: {
     kpi() {
       return this.$store.getters.kpi;
@@ -145,13 +133,6 @@ export default {
       });
       return filtered;
     },
-    /*meetsCriteria(asset) {
-      //let results = [];
-      this.kpi.assetCriteria.forEach(criteria => {
-        if (!criteria.test(asset[criteria.key])) return false;
-      });
-      return true;
-    },*/
     getKpiUnit() {
       if (this.kpi.unit === "appCurrency")
         return this.$store.state.settings.currency;
