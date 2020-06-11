@@ -1,24 +1,13 @@
 <template>
   <div>
     <v-content>
-      <v-container v-if="assets.length === 0" class="text-center px-5">
+      <v-container v-if="$store.state.assets.length === 0" class="text-center px-5">
         <div
-          class="display-1 my-6 font-weight-light"
+          class="handFont my-6 font-weight-light"
         >Get magical insights into the mystical world of your stock portfolio</div>
         <img alt="chicken logo" src="../public/images/pollofront.webp" width="290px">
       </v-container>
       <template v-else>
-        <!--<v-menu bottom left>
-          <template v-slot:activator="{ on }">
-            <v-btn text class="align-self-center my-3 ml-2" color="deep-purple accent-4" v-on="on">
-              {{ activeFilter }}
-              <v-icon right>mdi-menu-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list class="grey lighten-3">
-            <v-list-item v-for="(name,id) of filters" :key="id" @click="setFilter(name)">{{ name }}</v-list-item>
-          </v-list>
-        </v-menu>-->
         <v-list-item class="px-2 my-2">
           <v-list-item-avatar class="mr-1">
             <v-btn icon :href="kpi.info" target="_blank" class>
@@ -29,11 +18,11 @@
             <v-list-item-subtitle v-html="kpi.subtitle" :key="kpi.key"></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-
-        <template v-for="(item, idx) of filteredAssets()">
+        <template v-if="assets.length > 0">
           <v-alert
+            v-for="(item, idx) of assets"
             :key="`asset-${idx}`"
-            :color="item.change > 0 ? 'green accent-2' : 'red accent-2'"
+            :color="borderColor(item)"
             border="left"
             elevation="2"
             colored-border
@@ -48,9 +37,7 @@
               <v-list-item-action class="my-0">
                 <div class="numberFont">
                   {{ item[kpi.key] | toLocaleNumber(0) }}
-                  <span
-                    class="caption"
-                  >&nbsp;{{ getKpiUnit() }}</span>
+                  <span class="caption">&nbsp;{{ unit }}</span>
                 </div>
                 <!--<v-list-item-action-text class="body-1" v-if="expandAssets">
                   <span v-if="item.prices.length === 0" class="ml-2">🔍</span>
@@ -69,7 +56,7 @@
               </v-list-item-action>
             </v-list-item>
             <div
-              v-if="expandAssets && item.prices.length > 1"
+              v-if="expanded && item.prices.length > 1"
               class="hidden-sm-and-up mt-0 pl-2"
               style="height:55px"
             >
@@ -81,10 +68,10 @@
             </div>
           </v-alert>
         </template>
-        <!--<v-container v-else class="text-center">
-          <div class="title font-weight-light font-italic my-8">Nothing here</div>
+        <v-container v-else class="text-center">
+          <div class="title font-weight-light font-italic my-8">Nothing yet</div>
           <img alt="app logo" src="../public/images/pollofront.webp" width="100px">
-        </v-container>-->
+        </v-container>
       </template>
     </v-content>
   </div>
@@ -100,13 +87,11 @@ export default {
   },
   props: {
     id: String,
-    required: false
+    assets: Array,
+    unit: String
   },
   data() {
-    return {
-      activeFilter: null,
-      filters: ["Holding", "Already sold"]
-    };
+    return {};
   },
   created: function() {},
   mounted: function() {},
@@ -115,41 +100,22 @@ export default {
     kpi() {
       return this.$store.getters.kpi;
     },
-    expandAssets() {
+    expanded() {
       return this.$store.state.expandMode;
-    },
-    assets() {
-      return this.$store.state.assets.map(asset => new Asset(asset));
     },
     benchmark() {
       return new Asset(this.$store.state.settings.benchmark);
     }
   },
   methods: {
-    filteredAssets() {
-      let filtered = [];
-      this.assets.forEach(asset => {
-        if (asset[this.kpi.key]) filtered.push(asset);
-      });
-      return filtered;
+    borderColor(asset) {
+      if (asset.isSold())
+        return asset.return > 0 ? "green accent-2" : "red accent-2";
+      else return asset.change > 0 ? "green accent-2" : "red accent-2";
     },
-    getKpiUnit() {
-      if (this.kpi.unit === "appCurrency")
-        return this.$store.state.settings.currency;
-      else return this.kpi.unit;
-    },
-    setFilter(name) {
-      this.activeFilter = name;
-      this.$store.state.drawer = false;
-    },
-    matchesFilter(item) {
-      if (this.activeFilter === "Holding" && !item.isSold()) return true;
-      if (this.activeFilter === "Already sold" && item.isSold()) return true;
-      return false;
-    } /*
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
-    },*/,
+    },
     showDetails(asset) {
       // prevent from navigating to the current route again
       if (this.id !== asset.id) {

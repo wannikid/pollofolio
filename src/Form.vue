@@ -291,9 +291,6 @@ export default {
       this.asset.error = await API.requestHandler("history", {
         asset: this.asset
       });
-      this.asset.error = await API.requestHandler("quote", {
-        asset: this.asset
-      });
       this.loading = false;
     },
     allowedDates(val) {
@@ -321,6 +318,9 @@ export default {
         this.loading = true;
         // get some additional data on the asset
         await API.requestHandler("signal", { asset: this.asset });
+        this.asset.error = await API.requestHandler("quote", {
+          asset: this.asset
+        });
         // trim the timeseries of prices from buy to sell/current date
         this.trim(this.asset);
         if (!this.asset.id) this.$store.commit("addAsset", this.asset);

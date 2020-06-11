@@ -6,17 +6,39 @@
         @click="$store.state.showSettings = !$store.state.showSettings"
       ></v-app-bar-nav-icon>
 
-      <v-toolbar-title v-if="hasAssets">
+      <v-toolbar-title v-if="hasAssets" class="flex-grow-1 pl-0">
         <span class="d-flex mt-6">
-          <span class="numberFont">{{ kpi.value | toLocaleNumber(0)}}</span>
-          <span class="caption align-self-end mb-1">&nbsp;{{ getKpiUnit() }}</span>
+          <span class="numberFont ml-2">{{ kpi.value | toLocaleNumber(0)}}</span>
+          <span class="caption align-self-end mb-1">&nbsp;{{ kpiUnit }}</span>
         </span>
-        <transition name="slide" mode="out-in">
-          <div :key="kpi.name" class="body-1">{{ kpi.name }}</div>
-        </transition>
+
+        <v-menu bottom left>
+          <template v-slot:activator="{ on }">
+            <transition name="slide" mode="out-in">
+              <v-btn
+                text
+                class="align-self-start px-2"
+                v-on="on"
+                :key="$store.state.selectedKpiIdx"
+              >
+                {{ kpi.name }}
+                <v-icon right>mdi-menu-down</v-icon>
+              </v-btn>
+            </transition>
+          </template>
+          <v-list class="grey lighten-3">
+            <v-list-item
+              v-for="(kpi,id) of $store.getters.kpis"
+              :key="`menu-${id}`"
+              @click="$store.commit('setKpiIdx', id)"
+            >{{ kpi.name }}</v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar-title>
-      <!--<v-toolbar-title v-else class="font-weight-bold deep-orange--text text--darken-4">POLLOFOLIO</v-toolbar-title>-->
-      <v-spacer></v-spacer>
+      <template v-else>
+        <v-spacer></v-spacer>
+        <v-toolbar-title class="handFont">Start here -></v-toolbar-title>
+      </template>
       <v-btn
         v-if="hasAssets"
         icon
@@ -64,7 +86,7 @@
     >
       <router-view name="drawer" :key="$route.fullPath"/>
     </v-navigation-drawer>
-    <router-view :key="$route.fullPath"/>
+    <router-view :assets="this.filteredAssets" :unit="this.kpiUnit" :key="$route.fullPath"/>
   </v-app>
 </template>
  
@@ -92,6 +114,13 @@ export default {
     this.$store.dispatch("getExchangeRates", this.assets);
   },
   computed: {
+    filteredAssets() {
+      let filtered = [];
+      this.assets.forEach(asset => {
+        if (asset[this.kpi.key]) filtered.push(asset);
+      });
+      return filtered;
+    },
     hasAssets() {
       return this.assets.length > 0;
     },
@@ -105,6 +134,11 @@ export default {
     },
     kpi() {
       return this.$store.getters.kpi;
+    },
+    kpiUnit() {
+      if (this.kpi.unit === "appCurrency")
+        return this.$store.state.settings.currency;
+      else return this.kpi.unit;
     }
   },
   watch: {
@@ -116,29 +150,13 @@ export default {
     "$store.state.selectedKpiIdx": {
       immediate: true,
       handler() {
-        const filtreredArray = this.assets.filter(asset =>
-          this.meetsCriteria(asset)
-        );
-        const values = filtreredArray.map(asset => asset[this.kpi.key]);
-        this.$store.commit("setKpi", values);
+        this.$store.commit("setKpiValue", this.filteredAssets);
       }
     }
   },
   methods: {
-    meetsCriteria(asset) {
-      let results = [];
-      this.kpi.assetCriteria.forEach(criteria => {
-        results.push(criteria.test(asset[criteria.key]));
-      });
-      return results.includes(false) ? false : true;
-    },
     nextKpi() {
       this.$store.commit("incrementKpiIdx", 1);
-    },
-    getKpiUnit() {
-      if (this.kpi.unit === "appCurrency")
-        return this.$store.state.settings.currency;
-      else return this.kpi.unit;
     },
     async fetchPortfolioData() {
       let promises = [];
@@ -160,9 +178,6 @@ export default {
     },
     newAsset() {
       this.$router.push({ name: "add", params: { data: new Asset(null) } });
-    },
-    showInsights() {
-      this.$router.push({ name: "insights" });
     }
   }
 };
@@ -191,14 +206,17 @@ html {
   font-size: 24pt;
 }
 
+.handFont {
+  font-family: "Indie Flower", cursive;
+  font-size: 20pt;
+}
+
 .v-navigation-drawer__content {
   background: #ede7f6;
   background: linear-gradient(to top, #ede7f6, #ffffff);
 }
 
 .slide-in-right {
-  -webkit-animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
-    both;
   animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 /* ----------------------------------------------
@@ -213,33 +231,18 @@ html {
  * animation slide-in-right
  * ----------------------------------------
  */
-@-webkit-keyframes slide-in-right {
-  0% {
-    -webkit-transform: translateX(1000px);
-    transform: translateX(1000px);
-    opacity: 0;
-  }
-  100% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
 @keyframes slide-in-right {
   0% {
-    -webkit-transform: translateX(1000px);
     transform: translateX(1000px);
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateX(0);
     transform: translateX(0);
     opacity: 1;
   }
 }
 
 .blink-2 {
-  -webkit-animation: blink-2 1.9s infinite both;
   animation: blink-2 1.9s infinite both;
 }
 
@@ -255,17 +258,6 @@ html {
  * animation blink-2
  * ----------------------------------------
  */
-@-webkit-keyframes blink-2 {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 @keyframes blink-2 {
   0% {
     opacity: 1;

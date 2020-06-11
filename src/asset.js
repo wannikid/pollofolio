@@ -80,15 +80,17 @@ export default class Asset {
 
   set lastTrade(val) {
     this._lastTrade = val ? new Date(val) : null;
-  }
+  }*/
 
   get lastPrice() {
-    return this._lastPrice ? this._lastPrice : null;
+    return this.prices.length > 0 ? this.prices[this.prices.length - 1] : null;
   }
 
   set lastPrice(val) {
-    this._lastPrice = val ? parseFloat(val) : null;
-  }*/
+    if (this.lastChecked && val && !this.isSold())
+      this._timeseries[this.lastChecked] = parseFloat(val);
+    //this._lastPrice = val ? parseFloat(val) : null;
+  }
 
   get dateSell() {
     if (this._dateSell) return this._dateSell.toISOString().substring(0, 10);

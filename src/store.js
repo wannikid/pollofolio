@@ -236,12 +236,17 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setKpiIdx(state, value) {
+      state.selectedKpiIdx = value;
+    },
     incrementKpiIdx(state, value) {
       state.selectedKpiIdx = (state.selectedKpiIdx + value) % kpis.length;
     },
-    setKpi(state, values) {
-      let method = methods[kpis[state.selectedKpiIdx].method];
-      kpis[state.selectedKpiIdx].value = method(values);
+    setKpiValue(state, assets) {
+      let kpi = kpis[state.selectedKpiIdx];
+      const values = assets.map(asset => asset[kpi.key]);
+      const method = methods[kpi.method];
+      kpi.value = method(values);
     },
     setExchangeRates(state, value) {
       state.exchangeRates = value;
@@ -374,6 +379,9 @@ export default new Vuex.Store({
   getters: {
     kpi(state) {
       return kpis[state.selectedKpiIdx];
+    },
+    kpis() {
+      return kpis;
     },
     assetsIDs(state) {
       return state.assets.map(item => item._id);

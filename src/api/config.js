@@ -93,9 +93,10 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         if (!json.c) throw Error("No data");
-        asset.lastPrice = json.c;
-        asset.timeseries[today] = asset.lastPrice;
+
+        //asset.timeseries[today] = asset.lastPrice;
         asset.lastChecked = today;
+        asset.lastPrice = json.c;
       }
     },
     1: {
@@ -108,9 +109,10 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         if (!asset.name) asset.name = json.companyName;
-        asset.lastPrice = json.latestPrice;
-        asset.timeseries[today] = asset.lastPrice;
+
+        //asset.timeseries[today] = asset.lastPrice;
         asset.lastChecked = today;
+        asset.lastPrice = json.latestPrice;
       }
     }
   },
