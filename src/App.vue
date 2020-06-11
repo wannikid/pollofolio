@@ -20,7 +20,7 @@
       <v-btn
         v-if="hasAssets"
         icon
-        color="deep-purple accent-3"
+        :color="$store.state.expandMode ? 'grey lighten-1' : 'deep-purple accent-3'"
         class="hidden-sm-and-up"
         dark
         @click="$store.state.expandMode = !$store.state.expandMode"

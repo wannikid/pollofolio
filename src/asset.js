@@ -129,7 +129,7 @@ export default class Asset {
       dates.sort();
       for (let date of dates) this._timeseries[date] = val[date];
       // manually set the last available info
-      if (this.lastChecked && this.lastPrice)
+      if (this.lastChecked && this.lastPrice && !this.isSold())
         this._timeseries[this.lastChecked] = this.lastPrice;
     }
   }
