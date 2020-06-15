@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel ripple>
-    <v-expansion-panel-header class="d-flex justify-start">
+    <v-expansion-panel-header v-if="asset.id" class="d-flex justify-start">
       <span class="font-weight-medium">
         <v-icon class="pl-0 pr-3 black--text">mdi-pencil</v-icon>Edit
       </span>
@@ -152,7 +152,7 @@
 
         <v-row v-if="!asset.isSold()">
           <v-col class="py-0">
-            <v-switch dense v-model="soldSwitch" label="I sold it"></v-switch>
+            <v-switch inset dense v-model="soldSwitch" label="I sold it"></v-switch>
           </v-col>
         </v-row>
       </v-form>
@@ -210,9 +210,10 @@ export default {
   computed: {
     disableSaving() {
       return (
+        !!this.asset.id && (
         !this.$store.state.settings.termsConfirmed ||
         !this.valid ||
-        !this.hasChanged
+        !this.hasChanged)
       );
     }
   },

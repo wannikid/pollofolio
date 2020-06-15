@@ -5,13 +5,19 @@
       <v-divider></v-divider>
       <v-stepper-step :rules="[() => !asset.error]" :complete="activeStep > 2" step="2"></v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3"></v-stepper-step>
+      <v-stepper-step :complete="activeStep > 3" step="3"></v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step :complete="activeStep > 4" step="4"></v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step :complete="activeStep > 5" step="5"></v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step step="6"></v-stepper-step>
     </v-stepper-header>
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card flat color="yellow accent-1">
+        <v-card flat>
           <v-card-title>Heads up</v-card-title>
-          <v-card-text class="body-2 black--text">
+          <v-card-text class="black--text">
             <p>
               Data you enter in this app is stored
               <u>ONLY</u> on your device, so make sure you back it
@@ -24,19 +30,30 @@
             and gives no financial advise.
           </v-card-text>
         </v-card>
-        <v-btn
-          class="mt-4"
-          color="primary"
-          @click="activeStep = 2; $store.commit('confirmTerms')"
-        >I got it</v-btn>
+        <v-btn class="mt-4" color="primary" @click="next(); $store.commit('confirmTerms')">I got it</v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card flat color="yellow accent-1">
+        <v-card outlined>
           <v-card-title>Identify the asset</v-card-title>
-          <v-card-subtitle
-            class="body-2 black--text"
-          >Every asset on the stock market has a unique ticker symbol. Need help finding it?</v-card-subtitle>
+          <v-card-text>
+            <v-text-field
+              autofocus
+              outlined
+              label="Ticker/Symbol"
+              v-model="asset.ticker"
+              maxlength="10"
+              @change="check()"
+              :error-messages="asset.error"
+              hide-details
+            ></v-text-field>
+          </v-card-text>
+          <v-card-subtitle v-if="asset.name && !asset.error">
+            <v-alert text color="teal" border="left" type="success">{{ asset.name }}</v-alert>
+          </v-card-subtitle>
+          <v-card-text
+            class="black--text"
+          >Every asset on the stock market has a unique ticker symbol. Need help finding it?</v-card-text>
           <v-card-actions>
             <v-btn text color="primary">
               <v-icon left>mdi-open-in-new</v-icon>
@@ -47,92 +64,118 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-        <v-text-field
-          autofocus
-          outlined
-          class="my-5"
-          label="Ticker/Symbol"
-          v-model="asset.ticker"
-          maxlength="10"
-          @change="check()"
-          :error-messages="asset.error"
-          :success-messages="asset.name"
-        ></v-text-field>
-        <template v-if="asset.ticker && asset.name">
-          <v-card-title>
-            <template v-if="asset.name" class="text-truncate px-0">{{asset.name}}</template>
-          </v-card-title>
-          <v-card-subtitle v-if="asset.industry" class="blue--text px-0">{{ asset.industry }}</v-card-subtitle>
-          <v-card-text v-if="asset.description" class="caption px-0">{{ asset.description }}</v-card-text>
-        </template>
-        <v-btn
-          v-if="!asset.name"
-          :disabled="!asset.ticker"
-          :loading="loading"
-          color="primary"
-          @click="check()"
-        >Check</v-btn>
-        <v-btn v-else color="primary" @click="activeStep = 3">Next</v-btn>
-        <v-btn text @click="stepBack()">Back</v-btn>
+        <div class="mt-6">
+          <v-btn
+            v-if="!asset.name || !asset.ticker"
+            :disabled="!asset.ticker && !!asset.error"
+            :loading="loading"
+            color="primary"
+            @click="check()"
+          >Check</v-btn>
+          <v-btn v-else color="primary" @click="next()">Next</v-btn>
+          <v-btn text @click="stepBack()">Back</v-btn>
+        </div>
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        <v-row justify="center">
-          <v-date-picker
-            no-title
-            v-model="asset.dateBuy"
-            :allowed-dates="allowedDates"
-            @change="getBuyPrice()"
-          ></v-date-picker>
-        </v-row>
-        <v-row>
-          <v-col class="py-0">
+        <v-card outlined>
+          <v-card-title>Provide details</v-card-title>
+          <v-card-text
+            class="black--text"
+          >To know how much your asset has changed over time you need to provide some details about the transaction.</v-card-text>
+          <v-card-subtitle>Purchase date:</v-card-subtitle>
+          <v-card-subtitle>
+            <v-date-picker
+              flat
+              :full-width="true"
+              :show-current="false"
+              no-title
+              v-model="asset.dateBuy"
+              :allowed-dates="allowedDates"
+              @change="getBuyPrice()"
+            ></v-date-picker>
+          </v-card-subtitle>
+        </v-card>
+        <div class="mt-6">
+          <v-btn color="primary" @click="next()" :disabled="!asset.dateBuy">Next</v-btn>
+          <v-btn text @click="stepBack()">Back</v-btn>
+        </div>
+      </v-stepper-content>
+
+      <v-stepper-content step="4">
+        <v-card outlined>
+          <v-card-title>Provide details</v-card-title>
+          <v-card-text
+            class="black--text"
+          >To know how much your asset has changed over time you need to provide some details about the transaction.</v-card-text>
+          <v-card-subtitle>Price per share:</v-card-subtitle>
+          <v-card-subtitle>
             <v-text-field
-              persistent-hint
               v-model.number="asset.buyPrice"
-              hint="Price per share"
               type="number"
               pattern="\d+(\.\d{2})?"
               maxlength="10"
               min="0"
               :prefix="asset.currency"
             ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="py-0">
+          </v-card-subtitle>
+        </v-card>
+        <div class="mt-6">
+          <v-btn color="primary" @click="next()" :disabled="!asset.buyPrice">Next</v-btn>
+          <v-btn text @click="stepBack()">Back</v-btn>
+        </div>
+      </v-stepper-content>
+
+      <v-stepper-content step="5">
+        <v-card outlined>
+          <v-card-title>Provide details</v-card-title>
+          <v-card-text
+            class="black--text"
+          >To know how much your asset has changed over time you need to provide some details about the transaction.</v-card-text>
+          <v-card-subtitle>No. of shares:
             <v-text-field
-              persistent-hint
               v-model.number="asset.amount"
-              hint="No. of shares"
               type="number"
               pattern="\d+(\.\d{2})?"
               maxlength="10"
               min="0"
             ></v-text-field>
-          </v-col>
-          <v-col class="py-0">
+          </v-card-subtitle>
+        </v-card>
+        <div class="mt-6">
+          <v-btn color="primary" @click="next()" :disabled="!asset.amount">Next</v-btn>
+          <v-btn text @click="stepBack()">Back</v-btn>
+        </div>
+      </v-stepper-content>
+
+      <v-stepper-content step="6">
+        <v-card outlined>
+          <v-card-title>Provide details</v-card-title>
+          <v-card-text
+            class="black--text"
+          >To know how much your asset has changed over time you need to provide some details about the transaction.</v-card-text>
+          <v-card-subtitle>Invested value:
             <v-text-field
-              persistent-hint
               v-model.number="asset.buyValue"
               placeholder=" "
               type="number"
               maxlength="10"
               min="0"
-              hint="Invested value"
               :prefix="$store.state.settings.currency"
             ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-btn class="mt-4" color="primary" @click="next()" :loading="loading">Next</v-btn>
-        <v-btn class="mt-4" text @click="stepBack()">Back</v-btn>
+          </v-card-subtitle>
+        </v-card>
+        <div>
+          <v-btn color="primary" @click="next()" :disabled="!asset.buyValue">Next</v-btn>
+          <v-btn text @click="stepBack()">Back</v-btn>
+        </div>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
 
   <div v-else>
     <v-toolbar dense flat light>
-      <v-btn small icon @click="hideDetails()">
+      <v-btn icon @click="hideDetails()">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
     </v-toolbar>
@@ -196,7 +239,11 @@ export default {
     if (this.$store.state.settings.termsConfirmed) this.activeStep = 2;
   },
   mounted: function() {},
-  watch: {},
+  watch: {
+    activeStep() {
+      if (this.activeStep > 6) this.onboarding = false;
+    }
+  },
   computed: {
     openPanel: {
       // getter
@@ -214,7 +261,7 @@ export default {
       this.activeStep--;
     },
     next() {
-      this.onboarding = false;
+      this.activeStep++;
     },
     async getBuyPrice() {
       this.loading = true;
