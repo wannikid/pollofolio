@@ -6,16 +6,6 @@
       </span>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-      <v-card flat v-if="!asset.ticker" color="green accent-1">
-        <v-card-subtitle class="pb-0 black--text body-1">Need help finding a stock symbol?</v-card-subtitle>
-        <v-card-actions>
-          <v-btn text color="primary">
-            <v-icon left>mdi-open-in-new</v-icon>
-            <a target="_blank" href="https://www.worldtradingdata.com/search">Open search</a>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-
       <v-form class="mt-4" v-model="valid" ref="assetForm">
         <v-row>
           <v-col cols="6" class="py-0">
@@ -24,8 +14,8 @@
               outlined
               persistent-hint
               v-model.lazy="asset.ticker"
-              @change="getCompanyInfo()"
-              @click:append="getCompanyInfo()"
+              @change="check()"
+              @click:append="check()"
               :loading="loading"
               hint="Ticker/Symbol"
               maxlength="10"
@@ -95,7 +85,7 @@
               outlined
               persistent-hint
               v-model.number="asset.amount"
-              hint="Number of shares"
+              hint="No. of shares"
               type="number"
               pattern="\d+(\.\d{2})?"
               maxlength="10"
@@ -149,7 +139,7 @@
               outlined
               persistent-hint
               v-model.number="asset.sellValue"
-              hint="Total sell value"
+              hint="Sell value"
               placeholder=" "
               type="number"
               maxlength="10"
@@ -166,30 +156,6 @@
           </v-col>
         </v-row>
       </v-form>
-      <v-row justify="center">
-        <v-dialog v-model="dialog" persistent max-width="300">
-          <v-card>
-            <v-card-title>Just so you know...</v-card-title>
-            <v-card-text class="body-2 black--text">
-              <p>
-                Data you enter in this app is stored
-                <b>ONLY</b> on your device, so make sure you back it
-                up once in a while.
-              </p>
-              <p>
-                The statistics might deviate (a bit) from the real
-                valuation of your portfolio. Changes in exchange
-                rates are not considered.
-              </p>The app might change or stop working at any time
-              and gives no financial advise.
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="confirm()">I got it</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
 
       <v-btn
         :loading="loading"
@@ -221,15 +187,13 @@ export default {
       soldSwitch: false,
       hasChanged: false,
       rules: {
-        nameRequired: value => !!value || "Name required.",
-        quantityRequired: value => !!value || "Quantity required.",
-        dateBuyRequired: value => !!value || "Buy date required.",
-        buyPriceRequired: value => !!value || "Price required.",
-        totalBuyRequired: value => !!value || "Purchase value required.",
-        totalSellRequired: value =>
-          !!value || !this.soldSwitch || "Sell value required.",
-        dateSellRequired: value =>
-          !!value || !this.soldSwitch || "Sell date required.",
+        nameRequired: value => !!value || "Name required",
+        quantityRequired: value => !!value || "No. of shares",
+        dateBuyRequired: value => !!value || "Ourchase date",
+        buyPriceRequired: value => !!value || "Price per share",
+        totalBuyRequired: value => !!value || "Invested value",
+        totalSellRequired: value => !!value || !this.soldSwitch || "Sell value",
+        dateSellRequired: value => !!value || !this.soldSwitch || "Sell date",
         sellAfterBuy: () =>
           !this.asset._dateSell ||
           this.asset._dateBuy < this.asset._dateSell ||
@@ -244,9 +208,6 @@ export default {
   },
   mounted: function() {},
   computed: {
-    dialog() {
-      return !this.$store.state.settings.termsConfirmed;
-    },
     disableSaving() {
       return (
         !this.$store.state.settings.termsConfirmed ||
@@ -276,22 +237,6 @@ export default {
     },
     confirm() {
       this.$store.commit("confirmTerms");
-    },
-    async getCompanyInfo() {
-      this.loading = true;
-      this.asset.error = await API.requestHandler("company", {
-        asset: this.asset
-      });
-      // update the buy price if there is already a buy date
-      if (this.asset.dateBuy) this.asset.error = await this.getBuyPrice();
-      this.loading = false;
-    },
-    async getBuyPrice() {
-      this.loading = true;
-      this.asset.error = await API.requestHandler("history", {
-        asset: this.asset
-      });
-      this.loading = false;
     },
     allowedDates(val) {
       //if (this.asset.dates.length > 0)

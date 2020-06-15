@@ -37,7 +37,7 @@
       </v-toolbar-title>
       <template v-else>
         <v-spacer></v-spacer>
-        <v-toolbar-title class="handFont">Start here -></v-toolbar-title>
+        <v-toolbar-title class="handFont">Start here ->&nbsp;</v-toolbar-title>
       </template>
       <v-btn
         v-if="hasAssets"

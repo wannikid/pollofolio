@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 
 const allowedOrigins = [
   "https://h6kbw.csb.app",
+  "https://h6kbw.codesandbox.io",
   "https://pollofolio.netlify.app"
 ];
 

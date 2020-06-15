@@ -41,12 +41,6 @@ let kpis = [
   {
     name: "Current balance",
     icon: "🏦",
-    assetCriteria: [
-      {
-        key: "value",
-        test: notNull
-      }
-    ],
     subtitle: "The current value of your assets.",
     info: "https://www.investopedia.com/terms/m/marketvalue.asp",
     method: "sum",
@@ -78,12 +72,6 @@ let kpis = [
     subtitle: "Change in your assets' value.",
     info: "https://www.investopedia.com/terms/c/change.asp",
     key: "change",
-    assetCriteria: [
-      {
-        key: "change",
-        test: notNull
-      }
-    ],
     value: null,
     method: "sum",
     unit: "appCurrency"
@@ -96,16 +84,6 @@ let kpis = [
     method: "sum",
     value: null,
     key: "invested",
-    assetCriteria: [
-      {
-        key: "buyValue",
-        test: notNull
-      },
-      {
-        key: "dateSell",
-        test: isNull
-      }
-    ],
     unit: "appCurrency"
   },
   {
@@ -117,12 +95,6 @@ let kpis = [
     method: "sum",
     value: null,
     key: "return",
-    assetCriteria: [
-      {
-        key: "return",
-        test: notNull
-      }
-    ],
     unit: "appCurrency"
   },
   {
@@ -133,16 +105,6 @@ let kpis = [
     method: "sum",
     value: null,
     key: "income",
-    assetCriteria: [
-      {
-        key: "income",
-        test: notNull
-      },
-      {
-        key: "dateSell",
-        test: isNull
-      }
-    ],
     unit: "appCurrency"
   } /*
   {
@@ -195,12 +157,6 @@ let kpis = [
     method: "sum",
     value: null,
     key: "missedGain",
-    assetCriteria: [
-      {
-        key: "missedGain",
-        test: notNull
-      }
-    ],
     unit: "appCurrency"
   } /*
   {

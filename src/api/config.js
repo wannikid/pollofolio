@@ -93,8 +93,6 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         if (!json.c) throw Error("No data");
-
-        //asset.timeseries[today] = asset.lastPrice;
         asset.lastChecked = today;
         asset.lastPrice = json.c;
       }
@@ -109,8 +107,6 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         if (!asset.name) asset.name = json.companyName;
-
-        //asset.timeseries[today] = asset.lastPrice;
         asset.lastChecked = today;
         asset.lastPrice = json.latestPrice;
       }
@@ -128,7 +124,7 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         // prevent overwriting user's naming
-        if (!asset || !asset.name) asset.name = json.companyName;
+        asset.name = json.companyName;
         asset.address = [
           json.address,
           json.zip,
@@ -152,7 +148,7 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         // prevent overwriting user's naming
-        if (!asset || !asset.name) asset.name = json.name;
+        asset.name = json.name;
         asset.currency = json.currency;
         asset.industry = json.finnhubIndustry;
       }
