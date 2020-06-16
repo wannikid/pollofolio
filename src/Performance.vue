@@ -42,6 +42,12 @@ export default {
           suffix: "assetCurrency"
         },
         {
+          name: "Price target",
+          key: "targetPrice",
+          digits: 2,
+          suffix: "assetCurrency"
+        },
+        {
           name: "Stop Loss at",
           key: "stopLoss",
           digits: 2,

@@ -158,6 +158,16 @@ let kpis = [
     value: null,
     key: "missedGain",
     unit: "appCurrency"
+  },
+  {
+    name: "Delta to target",
+    icon: "😢",
+    subtitle: "Predicted value change based on price target.",
+    info: null,
+    method: "sum",
+    value: null,
+    key: "diffToTargetPrice",
+    unit: "appCurrency"
   } /*
   {
     name: "Potential updside",

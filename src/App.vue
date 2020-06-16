@@ -58,7 +58,7 @@
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
-      <v-btn
+      <!--<v-btn
         v-if="hasAssets"
         small
         color="deep-purple accent-3"
@@ -70,7 +70,7 @@
         @click="nextKpi()"
       >
         <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
+      </v-btn>-->
     </v-app-bar>
 
     <Settings v-if="$store.state.showSettings"/>
@@ -166,6 +166,7 @@ export default {
           if (!asset.isSold()) {
             promises.push(API.requestHandler("quote", { asset: asset }));
             promises.push(API.requestHandler("signal", { asset: asset }));
+            promises.push(API.requestHandler("target", { asset: asset }));
           }
         }
       });

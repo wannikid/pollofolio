@@ -76,11 +76,12 @@ export const resources = {
         asset.timeseries = timeseries;
         asset.buyPrice = json.c[0];
         asset.lastChecked = today;
+        asset.currency = "USD";
       }
     }
   },
   quote: {
-    2: {
+    1: {
       provider: providers.finnhub.provider,
       getUri: function({ asset }) {
         checkTicker(asset);
@@ -95,9 +96,10 @@ export const resources = {
         if (!json.c) throw Error("No data");
         asset.lastChecked = today;
         asset.lastPrice = json.c;
+        asset.currency = "USD";
       }
     },
-    1: {
+    2: {
       provider: providers.iex.provider,
       getUri: function({ asset }) {
         checkTicker(asset);
@@ -170,6 +172,22 @@ export const resources = {
         if (json.technicalAnalysis)
           asset.signal = json.technicalAnalysis.signal;
         if (json.trend) asset.trending = json.trend.trending;
+      }
+    }
+  },
+  target: {
+    1: {
+      provider: providers.finnhub.provider,
+      getUri: function({ asset }) {
+        checkTicker(asset);
+        const uri = providers.finnhub.baseUrl + "stock/price-target";
+        const params = {
+          symbol: asset.ticker
+        };
+        return { uri, params };
+      },
+      handleResponse: function(json, { asset }) {
+        asset.targetPrice = json.targetMean;
       }
     }
   },
