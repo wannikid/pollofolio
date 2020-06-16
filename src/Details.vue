@@ -94,10 +94,10 @@
 
       <v-stepper-content step="3">
         <v-card outlined color="transparent">
-          <v-card-title>Purchase date</v-card-title>
+          <v-card-title>Purchase details</v-card-title>
           <v-card-text
             class="black--text"
-          >To know how much your asset has changed over time, we need to know when you bought it.</v-card-text>
+          >To calculate the change over time, we need to know when you bought the asset and how much you invested.</v-card-text>
           <v-card-subtitle>
             <v-date-picker
               outlined
@@ -110,13 +110,26 @@
               @change="getBuyPrice()"
             ></v-date-picker>
           </v-card-subtitle>
+          <v-card-subtitle>
+            <v-text-field
+              :error="!asset.buyValue"
+              outlined
+              label="Invested value"
+              v-model.number="asset.buyValue"
+              type="number"
+              maxlength="10"
+              min="0"
+              :suffix="$store.state.settings.currency"
+              hide-details
+            ></v-text-field>
+          </v-card-subtitle>
         </v-card>
         <div class="mt-6">
           <v-btn
             class="white--text"
             color="deep-purple accent-2"
             @click="next()"
-            :disabled="!asset.dateBuy"
+            :disabled="!asset.dateBuy || !asset.buyValue"
           >Next</v-btn>
           <v-btn text @click="cancel()">Cancel</v-btn>
         </div>
@@ -124,7 +137,7 @@
 
       <v-stepper-content step="4">
         <v-card outlined color="transparent">
-          <v-card-title>Transaction details</v-card-title>
+          <v-card-title>Asset details</v-card-title>
           <v-card-text
             class="black--text"
           >Tell us how many assets you purchased and for what price. We prefilled the the asset price for you with information from the purchase date.</v-card-text>
@@ -173,16 +186,26 @@
 
       <v-stepper-content step="5">
         <v-card outlined color="transparent">
-          <v-card-title>Total investment</v-card-title>
+          <v-card-title>Sell details</v-card-title>
           <v-card-text
             class="black--text"
-          >To consider for exchange rate effects and brokerage fees, tell us the total amount you have invested.</v-card-text>
+          >If you sold your assets already, please specify when and for how much you sold them. Otherwise just continue to save.</v-card-text>
+          <v-card-subtitle>
+            <v-date-picker
+              outlined
+              label="Sell date"
+              :full-width="true"
+              :show-current="false"
+              no-title
+              v-model="asset.dateSell"
+              :allowed-dates="allowedDates"
+            ></v-date-picker>
+          </v-card-subtitle>
           <v-card-subtitle>
             <v-text-field
-              :error="!asset.buyValue"
               outlined
-              label="Invested value"
-              v-model.number="asset.buyValue"
+              label="Sell value"
+              v-model.number="asset.sellValue"
               type="number"
               maxlength="10"
               min="0"
@@ -190,21 +213,14 @@
               hide-details
             ></v-text-field>
           </v-card-subtitle>
-          <v-card-actions>
-            <v-btn
-              text
-              color="deep-purple accent-2"
-              @click="$store.state.drawer = false; $store.state.showSettings = !$store.state.showSettings"
-            >Change default currency</v-btn>
-          </v-card-actions>
         </v-card>
         <div class="mt-6">
           <v-btn
+            :loading="loading"
             class="white--text"
             color="deep-purple accent-2"
-            @click="next()"
-            :disabled="!asset.buyValue"
-          >Next</v-btn>
+            @click="save()"
+          >Save</v-btn>
           <v-btn text @click="cancel()">Cancel</v-btn>
         </div>
       </v-stepper-content>
@@ -218,6 +234,7 @@
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn
+        v-if="asset.id"
         @click="sync()"
         outlined
         small
@@ -237,18 +254,12 @@
       <Sparkline :values="asset.prices" height="95" :kpi="asset.totalChange"/>
     </v-card>
     <v-expansion-panels flat hover v-model="openPanel" tile accordion class="my-3">
+      <router-view name="info" :data="asset"></router-view>
       <router-view v-if="asset.prices.length > 1" name="news" :data="asset"></router-view>
       <router-view name="performance" :data="asset"></router-view>
       <router-view name="payouts" :data="asset"></router-view>
       <router-view name="form" :data="asset"></router-view>
     </v-expansion-panels>
-    <v-card outlined v-if="asset.id && !openPanel" class="mx-2">
-      <v-card-title>
-        <template v-if="asset.name" class="text-truncate">{{asset.name}}</template>
-      </v-card-title>
-      <v-card-subtitle v-if="asset.industry" class="blue--text">{{ asset.industry }}</v-card-subtitle>
-      <v-card-text v-if="asset.description" class="caption">{{ asset.description }}</v-card-text>
-    </v-card>
     <v-btn
       block
       light
@@ -276,13 +287,11 @@ export default {
     return {
       asset: this.data,
       panel: null,
-      onboarding: true,
       activeStep: 1,
       loading: false
     };
   },
   created: function() {
-    if (this.asset.id) this.onboarding = false;
     if (this.$store.state.settings.termsConfirmed) this.activeStep = 2;
   },
   mounted: function() {},
@@ -297,6 +306,9 @@ export default {
     }
   },
   computed: {
+    onboarding() {
+      return !this.asset.id;
+    },
     openPanel: {
       // getter
       get: function() {
@@ -309,6 +321,11 @@ export default {
     }
   },
   methods: {
+    allowedDates(val) {
+      let date = new Date(val);
+      if (this.asset._dateBuy && date <= this.asset._dateBuy) return false;
+      return ![0, 6].includes(date.getDay()) && date <= new Date();
+    },
     async sync() {
       this.loading = true;
       await API.requestHandler("quote", { asset: this.asset });
@@ -333,10 +350,18 @@ export default {
       });
       this.loading = false;
     },
-    allowedDates(val) {
-      // exclude weekends
-      let date = new Date(val);
-      return ![0, 6].includes(date.getDay()) && date <= new Date();
+    save: async function() {
+      this.loading = true;
+      // get some additional data on the asset
+      await API.requestHandler("signal", { asset: this.asset });
+      await API.requestHandler("target", { asset: this.asset });
+      this.asset.error = await API.requestHandler("quote", {
+        asset: this.asset
+      });
+      this.$store.commit("addAsset", this.asset);
+      this.$store.dispatch("updateInsights");
+      this.loading = false;
+      this.$store.state.drawer = false;
     },
     async check() {
       this.loading = true;

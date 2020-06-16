@@ -7,10 +7,11 @@
       </span>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-      <div class="body-2 my-2">Narrow down news by selecting a date range.</div>
-      <div class="text-center font-weight-medium d-flex justify-space-between mt-4 mb-2">
-        <span>{{ this.asset.dates[this.range[0]] }}</span>
-        <span>{{ this.data.dates[this.range[1]] }}</span>
+      <div class="body-2 my-2">You can specify a date range to narrow down the search.</div>
+      <div class="text-center d-flex justify-space-between mt-4 mb-2">
+        <span class="font-weight-medium">{{ this.asset.dates[this.range[0]] }}</span>
+        <span class="grey--text text--darken-2">until</span>
+        <span class="font-weight-medium">{{ this.data.dates[this.range[1]] }}</span>
       </div>
       <v-range-slider
         color="grey"

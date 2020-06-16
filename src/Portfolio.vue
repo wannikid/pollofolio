@@ -20,13 +20,14 @@
         </v-list-item>
         <template v-if="assets.length > 0">
           <v-alert
+            dense
             v-for="(item, idx) of assets"
             :key="`asset-${idx}`"
             :color="borderColor(item)"
             border="left"
-            elevation="2"
             colored-border
             class="pl-0 mx-2 mb-2 itemBg"
+            :elevation="2"
             v-on:click.native="showDetails(item)"
           >
             <v-list-item>

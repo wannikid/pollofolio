@@ -133,7 +133,7 @@ export const resources = {
           json.city,
           json.state,
           json.country
-        ].join();
+        ].join(", ");
         asset.industry = json.industry;
         asset.description = json.description;
       }

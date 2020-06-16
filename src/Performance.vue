@@ -42,7 +42,7 @@ export default {
           suffix: "assetCurrency"
         },
         {
-          name: "Price target",
+          name: "Avg. price target",
           key: "targetPrice",
           digits: 2,
           suffix: "assetCurrency"

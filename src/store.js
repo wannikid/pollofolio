@@ -69,7 +69,7 @@ let kpis = [
   {
     name: "Change",
     icon: "📈",
-    subtitle: "Change in your assets' value.",
+    subtitle: "Change in value of your assets.",
     info: "https://www.investopedia.com/terms/c/change.asp",
     key: "change",
     value: null,
@@ -79,7 +79,7 @@ let kpis = [
   {
     name: "Invested",
     icon: "🧾",
-    subtitle: "Initial value of your assets.",
+    subtitle: "Purchase value of your assets.",
     info: "https://www.investopedia.com/terms/i/investment.asp",
     method: "sum",
     value: null,
@@ -162,7 +162,7 @@ let kpis = [
   {
     name: "Delta to target",
     icon: "😢",
-    subtitle: "Predicted value change based on price target.",
+    subtitle: "Predicted change based on avg. price target.",
     info: null,
     method: "sum",
     value: null,

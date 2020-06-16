@@ -2,6 +2,7 @@ import Portfolio from "./Portfolio";
 import Insights from "./Insights";
 import Details from "./Details";
 import Form from "./Form.vue";
+import Info from "./Info.vue";
 import Payouts from "./Payouts";
 import Performance from "./Performance";
 import News from "./News";
@@ -37,6 +38,7 @@ export default new VueRouter({
           path: "/assets/:id",
           name: "show",
           components: {
+            info: Info,
             news: News,
             performance: Performance,
             payouts: Payouts,

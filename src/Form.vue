@@ -7,7 +7,7 @@
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-form class="mt-4" v-model="valid" ref="assetForm">
-        <v-row>
+        <!--<v-row>
           <v-col cols="6" class="py-0">
             <v-text-field
               dense
@@ -35,7 +35,7 @@
               placeholder
             ></v-text-field>
           </v-col>
-        </v-row>
+        </v-row>--->
         <v-row>
           <v-col cols="6" class="py-0">
             <v-dialog v-model="buyModal" width="290px">
@@ -197,7 +197,7 @@ export default {
         sellAfterBuy: () =>
           !this.asset._dateSell ||
           this.asset._dateBuy < this.asset._dateSell ||
-          "Sell date is before purchase date.",
+          "Sell date must be after purchase date.",
         noFutureDate: value =>
           new Date(value) <= new Date() || "Date cannot be in the future."
       }
@@ -210,10 +210,10 @@ export default {
   computed: {
     disableSaving() {
       return (
-        !!this.asset.id && (
-        !this.$store.state.settings.termsConfirmed ||
-        !this.valid ||
-        !this.hasChanged)
+        !!this.asset.id &&
+        (!this.$store.state.settings.termsConfirmed ||
+          !this.valid ||
+          !this.hasChanged)
       );
     }
   },
@@ -264,11 +264,12 @@ export default {
         this.loading = true;
         // get some additional data on the asset
         await API.requestHandler("signal", { asset: this.asset });
+        await API.requestHandler("target", { asset: this.asset });
         this.asset.error = await API.requestHandler("quote", {
           asset: this.asset
         });
         // trim the timeseries of prices from buy to sell/current date
-        this.trim(this.asset);
+        //this.trim(this.asset);
         if (!this.asset.id) this.$store.commit("addAsset", this.asset);
         else this.$store.commit("updateAsset", this.asset);
         this.$store.dispatch("updateInsights");
