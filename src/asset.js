@@ -17,10 +17,9 @@ export default class Asset {
     this.stopLoss = item._stopLoss;
     this.stopLossBaseline = item._stopLossBaseline;
     this.buyPrice = item._buyPrice;
-    this.lastPrice = item.lastPrice;
-    this.targetPrice = item.targetPrice;
-    this.yearlyHigh = item.yearlyHigh;
-    this.yearlyLow = item.yearlyLow;
+    this.targetPrice = item._targetPrice;
+    this.yearlyHigh = item._yearlyHigh;
+    this.yearlyLow = item._yearlyLow;
     this.peRatio = item.peRatio;
     this.address = item.address;
     this.industry = item.industry;
@@ -71,6 +70,14 @@ export default class Asset {
 
   get yearlyHigh() {
     return this._yearlyHigh ? this._yearlyHigh : null;
+  }
+
+  set yearlyLow(val) {
+    this._yearlyLow = val ? parseFloat(val) : null;
+  }
+
+  get yearlyLow() {
+    return this._yearlyLow ? this._yearlyLow : null;
   }
 
   set targetPrice(val) {

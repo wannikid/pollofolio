@@ -39,7 +39,7 @@
             class="white--text"
             @click="next(); $store.commit('confirmTerms')"
           >OK, whatever</v-btn>
-          <v-btn text @click="cancel()">Cancel</v-btn>
+          <v-btn text @click="hideDetails()">Cancel</v-btn>
         </div>
       </v-stepper-content>
 
@@ -88,7 +88,7 @@
             color="deep-purple accent-2"
             @click="next()"
           >Next</v-btn>
-          <v-btn text @click="cancel()">Cancel</v-btn>
+          <v-btn text @click="hideDetails()">Cancel</v-btn>
         </div>
       </v-stepper-content>
 
@@ -131,7 +131,7 @@
             @click="next()"
             :disabled="!asset.dateBuy || !asset.buyValue"
           >Next</v-btn>
-          <v-btn text @click="cancel()">Cancel</v-btn>
+          <v-btn text @click="hideDetails()">Cancel</v-btn>
         </div>
       </v-stepper-content>
 
@@ -180,7 +180,7 @@
             @click="next()"
             :disabled="!asset.buyPrice || !asset.amount"
           >Next</v-btn>
-          <v-btn text @click="cancel()">Cancel</v-btn>
+          <v-btn text @click="hideDetails()">Cancel</v-btn>
         </div>
       </v-stepper-content>
 
@@ -221,7 +221,7 @@
             color="deep-purple accent-2"
             @click="save()"
           >Save</v-btn>
-          <v-btn text @click="cancel()">Cancel</v-btn>
+          <v-btn text @click="hideDetails()">Cancel</v-btn>
         </div>
       </v-stepper-content>
     </v-stepper-items>
@@ -296,9 +296,6 @@ export default {
   },
   mounted: function() {},
   watch: {
-    activeStep() {
-      if (this.activeStep > 5) this.onboarding = false;
-    },
     "asset.ticker": function() {
       // reset the error message and the name every time the ticker changes
       this.asset.error = null;
@@ -323,6 +320,7 @@ export default {
   methods: {
     allowedDates(val) {
       let date = new Date(val);
+      // only show dates that are bigger/equal than the buy date
       if (this.asset._dateBuy && date <= this.asset._dateBuy) return false;
       return ![0, 6].includes(date.getDay()) && date <= new Date();
     },
@@ -333,9 +331,6 @@ export default {
       await API.requestHandler("target", { asset: this.asset });
       this.$store.commit("updateAsset", this.asset);
       this.loading = false;
-    },
-    cancel() {
-      this.$store.state.drawer = false;
     },
     stepBack() {
       this.activeStep--;
@@ -361,7 +356,7 @@ export default {
       this.$store.commit("addAsset", this.asset);
       this.$store.dispatch("updateInsights");
       this.loading = false;
-      this.$store.state.drawer = false;
+      this.hideDetails();
     },
     async check() {
       this.loading = true;
@@ -373,7 +368,7 @@ export default {
       this.loading = false;
     },
     hideDetails() {
-      this.$store.state.drawer = false;
+      this.$router.push({ name: "assets" });
     },
     removeAsset(id) {
       if (confirm("Are you sure you want delete it?")) {

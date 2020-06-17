@@ -143,7 +143,7 @@ export default {
   },
   watch: {
     "$store.state.drawer": function() {
-      // reset route to assets
+      // reset route when the drawer is closed without using the menu bar buttons
       if (!this.$store.state.drawer && this.$route.name !== "assets")
         this.$router.push({ name: "assets" });
     },
