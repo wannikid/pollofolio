@@ -123,6 +123,13 @@
               hide-details
             ></v-text-field>
           </v-card-subtitle>
+          <v-card-actions>
+            <v-btn
+              text
+              color="deep-purple accent-2"
+              @click="hideDetails(); $store.state.showSettings = !$store.state.showSettings"
+            >Change default currency</v-btn>
+          </v-card-actions>
         </v-card>
         <div class="mt-6">
           <v-btn

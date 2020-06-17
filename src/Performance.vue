@@ -18,7 +18,13 @@
           class="d-flex justify-space-between pb-1 body-2"
         >
           <span class="subtitle-2" v-html="detail.name"></span>
-          <span>{{ asset[detail.key] | toLocaleNumber(detail.digits) }}{{ suffix(detail.suffix) }}</span>
+          <span>
+            {{ asset[detail.key] | toLocaleNumber(detail.digits) }}
+            <span
+              v-if="detail.suffix"
+              class="caption align-self-end"
+            >{{ suffix(detail.suffix) }}</span>
+          </span>
         </div>
       </div>
     </v-expansion-panel-content>
@@ -112,12 +118,12 @@ export default {
           key: "roi",
           digits: 1,
           suffix: "%"
-        } /*
+        },
         {
           name: "Technical signal",
           key: "signal",
           digits: null,
-          suffix: ""
+          suffix: null
         }
         /*{
           name: "Relative change to benchmark",

@@ -30,13 +30,6 @@ const methods = {
   }
 };
 
-const notNull = val => {
-  return !!val;
-};
-const isNull = val => {
-  return !val;
-};
-
 let kpis = [
   {
     name: "Current balance",

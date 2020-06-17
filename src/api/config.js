@@ -170,7 +170,7 @@ export const resources = {
       },
       handleResponse: function(json, { asset }) {
         if (json.technicalAnalysis)
-          asset.signal = json.technicalAnalysis.signal;
+          asset.signal = json.technicalAnalysis.signal.toUpperCase();
         if (json.trend) asset.trending = json.trend.trending;
       }
     }

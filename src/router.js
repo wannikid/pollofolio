@@ -23,6 +23,7 @@ export default new VueRouter({
       beforeEnter: (to, from, next) => {
         store.state.selectedKpiIdx = 0;
         store.state.drawer = false;
+        store.state.showSettings = false;
         next();
       }
     },
