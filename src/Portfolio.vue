@@ -5,13 +5,19 @@
         <div
           class="handFont my-6 font-weight-light"
         >Get magical insights into the mystical world of your stock portfolio</div>
-        <img alt="chicken logo" src="../public/images/pollofront.webp" width="290px">
+        <picture>
+          <source srcset="../public/images/pollofront.webp" type="image/webp">
+          <source srcset="../public/images/pollofront.png" type="image/png">
+          <img src="../public/images/pollofront.png" alt="App logo" width="290px">
+        </picture>
       </v-container>
       <template v-else>
         <v-list-item class="px-2 my-2">
           <v-list-item-avatar class="mr-1">
-            <v-btn icon :href="kpi.info" target="_blank" class>
-              <v-icon :color="kpi.info ? 'blue' : 'grey lighten-1'">mdi-head-question-outline</v-icon>
+            <v-btn fab :href="kpi.info" target="_blank">
+              <v-icon
+                :color="kpi.info ? 'deep-purple accent-2' : 'grey lighten-1'"
+              >mdi-information-outline</v-icon>
             </v-btn>
           </v-list-item-avatar>
           <v-list-item-content>

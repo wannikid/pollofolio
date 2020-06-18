@@ -34,8 +34,7 @@
             <v-card-title>Heads up</v-card-title>
             <v-card-text class="black--text">
               <p>
-                Data you enter in this app is stored
-                <u>ONLY</u> on your device, so make sure you back it
+                Data you enter here never leaves your device, so make sure you back it
                 up once in a while.
               </p>
               <p>
@@ -214,7 +213,7 @@
           <v-card outlined>
             <v-card-title>Sell details</v-card-title>
             <v-card-text class="black--text">
-              <b>If you still own the asset just save.</b> Otherwise, please specify when and for how much you sold them.
+              <b>If you still own the asset just click save.</b> Otherwise, please specify when and for how much you sold them.
             </v-card-text>
             <v-card-subtitle>
               <v-date-picker
@@ -252,7 +251,9 @@
 
   <div v-else>
     <v-toolbar dense flat light>
-      <v-btn dark color="black" small @click="hideDetails()">Back</v-btn>
+      <v-btn icon @click="hideDetails()">
+        <v-icon color="black">mdi-arrow-left-circle</v-icon>
+      </v-btn>
       <v-spacer></v-spacer>
       <v-btn v-if="asset.id" @click="sync()" outlined small :loading="loading" text>Update</v-btn>
     </v-toolbar>
