@@ -31,8 +31,7 @@ export default class Asset {
   }
 
   get id() {
-    if (this._id) return this._id;
-    else return null;
+    return this._id;
   }
 
   set id(val) {

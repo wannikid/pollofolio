@@ -19,28 +19,35 @@
           </v-list-item-content>
         </v-list-item>
         <template v-if="assets.length > 0">
-          <v-alert
-            dense
-            v-for="(item, idx) of assets"
-            :key="`asset-${idx}`"
-            :color="borderColor(item)"
-            border="left"
-            colored-border
-            class="pl-0 mx-2 mb-2 itemBg"
-            :elevation="2"
-            v-on:click.native="showDetails(item)"
-          >
-            <v-list-item>
-              <v-list-item-content
-                class="font-weight-bold grey--text text--darken-4 py-0 align-start"
-              >{{ item.name }}</v-list-item-content>
+          <v-row class="mx-1">
+            <v-col
+              class="py-0 px-0"
+              cols="12"
+              sm="6"
+              md="4"
+              v-for="(item, idx) of assets"
+              :key="`asset-${idx}`"
+            >
+              <v-alert
+                dense
+                :color="borderColor(item)"
+                border="left"
+                colored-border
+                class="pl-0 mx-2 mb-2 itemBg"
+                :elevation="2"
+                v-on:click.native="showDetails(item)"
+              >
+                <v-list-item>
+                  <v-list-item-content
+                    class="font-weight-bold grey--text text--darken-4 py-0 align-start"
+                  >{{ item.name }}</v-list-item-content>
 
-              <v-list-item-action class="my-0">
-                <div class="numberFont">
-                  {{ item[kpi.key] | toLocaleNumber(0) }}
-                  <span class="caption">&nbsp;{{ unit }}</span>
-                </div>
-                <!--<v-list-item-action-text class="body-1" v-if="expandAssets">
+                  <v-list-item-action class="my-0">
+                    <div class="numberFont">
+                      {{ item[kpi.key] | toLocaleNumber(0) }}
+                      <span class="caption">&nbsp;{{ unit }}</span>
+                    </div>
+                    <!--<v-list-item-action-text class="body-1" v-if="expandAssets">
                   <span v-if="item.prices.length === 0" class="ml-2">🔍</span>
                   <span v-if="item.hasAlarm()" class="ml-2">⏰</span>
                   <span v-if="item.forexChange" class="ml-2">💱</span>
@@ -53,25 +60,27 @@
                     v-if="item.signal && item.signal.toUpperCase().includes('SELL')"
                     class="ml-2"
                   >👎</span>
-                </v-list-item-action-text>--->
-              </v-list-item-action>
-            </v-list-item>
-            <div
-              v-if="expanded && item.prices.length > 1"
-              class="hidden-sm-and-up mt-0 pl-2"
-              style="height:55px"
-            >
-              <!--<v-list-item-content
-                v-if="item.lastChecked"
-                class="caption grey--text"
-              >Updated {{ item.lastChecked }}</v-list-item-content>-->
-              <Sparkline :values="item.prices" height="50" :kpi="item.change"/>
-            </div>
-          </v-alert>
+                    </v-list-item-action-text>--->
+                  </v-list-item-action>
+                </v-list-item>
+                <div
+                  v-if="expanded && item.prices.length > 1"
+                  class="hidden-sm-and-up mt-0 pl-2"
+                  style="height:55px"
+                >
+                  <Sparkline :values="item.prices" height="50" :kpi="item.change"/>
+                </div>
+              </v-alert>
+            </v-col>
+          </v-row>
         </template>
         <v-container v-else class="text-center">
           <div class="title font-weight-light font-italic my-8">Nothing yet</div>
-          <img alt="app logo" src="../public/images/pollofront.webp" width="100px">
+          <picture>
+            <source srcset="../public/images/pollofront.webp" type="image/webp">
+            <source srcset="../public/images/pollofront.png" type="image/png">
+            <img src="../public/images/pollofront.png" alt="App logo" width="100px">
+          </picture>
         </v-container>
       </template>
     </v-content>
