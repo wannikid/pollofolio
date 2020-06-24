@@ -10,26 +10,6 @@ const vuexPersist = new VuexPersist({
 
 Vue.use(Vuex);
 
-const methods = {
-  sum: function(array) {
-    const method = (acc, cur) => acc + cur;
-    return array.reduce(method, 0);
-  },
-  last: function(array) {
-    return array[array.length - 1];
-  },
-  monthlyMean: function(array) {
-    const method = (acc, cur) => acc + cur;
-    let sum = array.reduce(method, 0);
-    // 30 days per month on average
-    let avg = array.length >= 30 ? sum / (array.length / 30) : sum;
-    return isNaN(avg) ? 0 : avg;
-  },
-  lastChange: function(array) {
-    return array[array.length - 1] - array[array.length - 2];
-  }
-};
-
 let kpis = [
   {
     name: "Current balance",
@@ -37,7 +17,6 @@ let kpis = [
     subtitle: "The current value of your assets.",
     info: "https://www.investopedia.com/terms/m/marketvalue.asp",
     method: "sum",
-    value: null,
     key: "value",
     unit: "appCurrency"
   } /*
@@ -65,7 +44,6 @@ let kpis = [
     subtitle: "Change in value of your assets.",
     info: "https://www.investopedia.com/terms/c/change.asp",
     key: "change",
-    value: null,
     method: "sum",
     unit: "appCurrency"
   },
@@ -75,7 +53,6 @@ let kpis = [
     subtitle: "Purchase value of your assets.",
     info: "https://www.investopedia.com/terms/i/investment.asp",
     method: "sum",
-    value: null,
     key: "invested",
     unit: "appCurrency"
   },
@@ -86,7 +63,6 @@ let kpis = [
     subtitle: "Gain/Loss from sold assets & dividends.",
     info: "https://www.investopedia.com/terms/r/return.asp",
     method: "sum",
-    value: null,
     key: "return",
     unit: "appCurrency"
   },
@@ -96,7 +72,6 @@ let kpis = [
     subtitle: "Income from receiving dividends.",
     info: "https://www.investopedia.com/terms/d/dividend.asp",
     method: "sum",
-    value: null,
     key: "income",
     unit: "appCurrency"
   } /*
@@ -148,7 +123,6 @@ let kpis = [
     subtitle: "Drop in value from highest point.",
     info: null,
     method: "sum",
-    value: null,
     key: "missedGain",
     unit: "appCurrency"
   },
@@ -158,7 +132,6 @@ let kpis = [
     subtitle: "Predicted change based on avg. price target.",
     info: null,
     method: "sum",
-    value: null,
     key: "diffToTargetPrice",
     unit: "appCurrency"
   } /*
@@ -200,12 +173,6 @@ export default new Vuex.Store({
     },
     incrementKpiIdx(state, value) {
       state.selectedKpiIdx = (state.selectedKpiIdx + value) % kpis.length;
-    },
-    setKpiValue(state, assets) {
-      let kpi = kpis[state.selectedKpiIdx];
-      const values = assets.map(asset => asset[kpi.key]);
-      const method = methods[kpi.method];
-      kpi.value = method(values);
     },
     setExchangeRates(state, value) {
       state.exchangeRates = value;
@@ -302,26 +269,6 @@ export default new Vuex.Store({
         date: date
       });
       commit("setExchangeRates", state.exchangeRates);
-    },
-    async updateInsights({ commit, state, dispatch, getters }) {
-      if (state.assets.length > 0) {
-        const response = await fetch(
-          "https://runonstocks-tyjszt3iha-uc.a.run.app/insights",
-          {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              stocks: state.assets,
-              taxes: state.settings.taxes
-            })
-          }
-        );
-        const stats = await response.json();
-        commit("setStats", stats);
-      }
     },
     async fetchBenchmarkData({ commit, state, dispatch, getters }) {
       state.settings.benchmark.dateBuy = getters.firstPortfolioDate;

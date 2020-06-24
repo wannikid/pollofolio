@@ -22,6 +22,7 @@
         class="align-center my-5 px-0"
       ></v-range-slider>
       <v-btn
+        rounded
         :loading="searching"
         block
         class="white--text"

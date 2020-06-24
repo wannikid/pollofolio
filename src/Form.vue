@@ -7,35 +7,6 @@
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-form class="mt-4" v-model="valid" ref="assetForm">
-        <!--<v-row>
-          <v-col cols="6" class="py-0">
-            <v-text-field
-              dense
-              outlined
-              persistent-hint
-              v-model.lazy="asset.ticker"
-              @change="check()"
-              @click:append="check()"
-              :loading="loading"
-              hint="Ticker/Symbol"
-              maxlength="10"
-              :append-icon="'mdi-magnify'"
-            ></v-text-field>
-          </v-col>
-          <v-col class="py-0">
-            <v-text-field
-              dense
-              :loading="loading"
-              outlined
-              persistent-hint
-              v-model.lazy="asset.name"
-              hint="Name"
-              maxlength="30"
-              :rules="[rules.nameRequired]"
-              placeholder
-            ></v-text-field>
-          </v-col>
-        </v-row>--->
         <v-row>
           <v-col cols="6" class="py-0">
             <v-dialog v-model="buyModal" width="290px">
@@ -158,6 +129,7 @@
       </v-form>
 
       <v-btn
+        rounded
         :loading="loading"
         class="mt-3 white--text"
         color="deep-purple accent-4"
@@ -272,7 +244,6 @@ export default {
         //this.trim(this.asset);
         if (!this.asset.id) this.$store.commit("addAsset", this.asset);
         else this.$store.commit("updateAsset", this.asset);
-        this.$store.dispatch("updateInsights");
         this.hasChanged = false;
         this.loading = false;
         this.$store.state.drawer = false;

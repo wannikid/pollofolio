@@ -76,7 +76,7 @@
           &nbsp;
           <v-icon>mdi-twitter</v-icon>
         </div>
-        <div class>Follow evolution on Instagram
+        <div>Follow design evolution
           <v-btn icon href="https://www.instagram.com/pollofolio" target="_blank">
             <v-icon>mdi-instagram</v-icon>
           </v-btn>
@@ -111,9 +111,7 @@ export default {
       this.$store.commit("setCurrency", this.$store.state.settings.currency);
       this.$store.dispatch("getExchangeRates", this.assets);
     },
-    "$store.state.settings.taxes": function() {
-      this.$store.dispatch("updateInsights");
-    },
+    "$store.state.settings.taxes": function() {},
     "$store.state.settings.benchmark._ticker": async function() {
       await API.getChart(this.benchmark);
       this.$store.commit("setBenchmark", this.benchmark);
@@ -182,7 +180,6 @@ export default {
               // wait for all assets to be updated
               await Promise.all(promises);
               that.$store.commit("setAssets", that.assets);
-              that.$store.dispatch("updateInsights");
             }
           } else alert("The file is empty, my friend.");
         };

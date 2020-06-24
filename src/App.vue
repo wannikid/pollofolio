@@ -1,14 +1,11 @@
 <template>
   <v-app v-cloak class="noselect">
-    <v-app-bar app :prominent="hasAssets" clipped-right color="yellow accent-3" light>
-      <v-app-bar-nav-icon
-        color="deep-purple accent-2"
-        @click="$store.state.showSettings = !$store.state.showSettings"
-      ></v-app-bar-nav-icon>
+    <v-app-bar app :prominent="hasAssets" clipped-right class="yellow accent-3">
+      <v-app-bar-nav-icon @click="$store.state.showSettings = !$store.state.showSettings"></v-app-bar-nav-icon>
 
       <v-toolbar-title v-if="hasAssets" class="flex-grow-1 pl-0">
         <span class="d-flex mt-6">
-          <span class="numberFont ml-2">{{ kpi.value | toLocaleNumber(0)}}</span>
+          <span class="numberFont ml-2">{{ kpiValue | toLocaleNumber(0)}}</span>
           <span class="caption align-self-end mb-1">&nbsp;{{ kpiUnit }}</span>
         </span>
 
@@ -39,23 +36,21 @@
       <v-btn
         v-if="hasAssets"
         icon
-        :color="$store.state.expandMode ? 'grey lighten-1' : 'deep-purple accent-3'"
         class="hidden-sm-and-up"
-        dark
         @click="$store.state.expandMode = !$store.state.expandMode"
       >
         <v-icon>mdi-chart-areaspline-variant</v-icon>
       </v-btn>
       <v-btn
-        v-if="$store.state.assets.length === 0"
+        id="startBtn"
         dark
+        v-if="assets.length === 0 && !$store.state.drawer"
         small
-        color="deep-purple accent-3"
         class="white--text"
         @click="newAsset()"
       >Start</v-btn>
-      <v-btn v-else icon color="deep-purple accent-3" @click="newAsset()">
-        <v-icon>mdi-plus</v-icon>
+      <v-btn v-else-if="!$store.state.drawer" icon @click="newAsset()">
+        <v-icon>mdi-plus-circle</v-icon>
       </v-btn>
     </v-app-bar>
 
@@ -81,6 +76,7 @@
 import Asset from "./asset.js";
 import Settings from "./Settings";
 import * as API from "./api/api";
+import gsap from "gsap";
 
 export default {
   name: "App",
@@ -88,7 +84,27 @@ export default {
     Settings
   },
   data() {
-    return {};
+    return {
+      methods: {
+        sum: function(array) {
+          const method = (acc, cur) => acc + cur;
+          return array.reduce(method, 0);
+        },
+        last: function(array) {
+          return array[array.length - 1];
+        },
+        monthlyMean: function(array) {
+          const method = (acc, cur) => acc + cur;
+          let sum = array.reduce(method, 0);
+          // 30 days per month on average
+          let avg = array.length >= 30 ? sum / (array.length / 30) : sum;
+          return isNaN(avg) ? 0 : avg;
+        },
+        lastChange: function(array) {
+          return array[array.length - 1] - array[array.length - 2];
+        }
+      }
+    };
   },
   created: async function() {
     //this.$store.dispatch("fetchBenchmarkData");
@@ -98,6 +114,7 @@ export default {
   mounted: function() {
     this.fetchPortfolioData();
     this.$store.dispatch("getExchangeRates", this.assets);
+    gsap.from("#startBtn", { delay: 0.5, x: 100, opacity: 0 });
   },
   computed: {
     filteredAssets() {
@@ -121,6 +138,11 @@ export default {
     kpi() {
       return this.$store.getters.kpi;
     },
+    kpiValue() {
+      const values = this.assets.map(asset => asset[this.kpi.key]);
+      const method = this.methods[this.kpi.method];
+      return method(values);
+    },
     kpiUnit() {
       if (this.kpi.unit === "appCurrency")
         return this.$store.state.settings.currency;
@@ -132,12 +154,6 @@ export default {
       // reset route when the drawer is closed without using the menu bar buttons
       if (!this.$store.state.drawer && this.$route.name !== "assets")
         this.$router.push({ name: "assets" });
-    },
-    "$store.state.selectedKpiIdx": {
-      immediate: true,
-      handler() {
-        this.$store.commit("setKpiValue", this.filteredAssets);
-      }
     }
   },
   methods: {
@@ -160,7 +176,6 @@ export default {
       if (promises.length > 0) {
         await Promise.all(promises);
         this.$store.commit("setAssets", this.assets);
-        this.$store.dispatch("updateInsights");
       }
     },
     newAsset() {
@@ -212,6 +227,20 @@ html {
 }
 .slide-leave-to {
   transform: translate(-100%, 0);
+}
+
+.gradientBg {
+  background: #ede7f6;
+  background: -webkit-linear-gradient(
+    to right,
+    #ede7f6,
+    #ffffff
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #ede7f6,
+    #ffffff
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 </style>
 

@@ -75,6 +75,7 @@
         </v-row>
       </v-form>
       <v-btn
+        rounded
         block
         class="white--text"
         color="deep-purple accent-4"
@@ -155,8 +156,6 @@ export default {
         this.$delete(this.asset._payouts, date);
         this.payoutDate = null;
         this.payoutValue = null;
-        //this.$store.commit("updateAsset", this.asset);
-        this.$store.dispatch("updateInsights", this.$store.state.assets);
       }
     },
     savePayout() {
@@ -165,8 +164,6 @@ export default {
         this.$set(this.asset._payouts, this.payoutDate, {
           value: this.payoutValue
         });
-        //this.$store.commit("updateAsset", this.asset);
-        this.$store.dispatch("updateInsights", this.$store.state.assets);
         this.payoutDate = null;
         this.payoutValue = null;
       }
