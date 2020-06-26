@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     numberColor(asset) {
-      if (this.kpi.key === "change")
+      if (this.kpi.key === "change" || this.kpi.key === "forexChange")
         return asset[this.kpi.key] < 0
           ? "red--text text--accent-3"
           : "green--text text--accent-4";

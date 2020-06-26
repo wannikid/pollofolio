@@ -42,6 +42,12 @@ export default {
       asset: this.data,
       details: [
         {
+          name: "Holding period",
+          key: "holdingPeriod",
+          digits: 0,
+          suffix: " days"
+        },
+        {
           name: "Last price",
           key: "lastPrice",
           digits: 2,
@@ -58,13 +64,6 @@ export default {
           key: "targetPrice",
           digits: 2,
           suffix: "assetCurrency"
-        },
-
-        {
-          name: "Holding period",
-          key: "holdingPeriod",
-          digits: 0,
-          suffix: " days"
         },
         {
           name: "Invested value",

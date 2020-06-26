@@ -75,7 +75,17 @@ let kpis = [
     method: "sum",
     key: "income",
     unit: "appCurrency"
-  } /*
+  },
+  {
+    name: "Forex effects",
+    icon: "😢",
+    subtitle: "Effect of currency exchange rate changes.",
+    info: null,
+    method: "sum",
+    key: "forexChange",
+    unit: "appCurrency"
+  },
+  /*
   {
     name: "Avg. monthly income",
     subtitle: "Average monthly change of your portfolio's valuation.",
@@ -117,8 +127,7 @@ let kpis = [
     method: "sum",
     kpi: null,
     unit: this.$store.state.settings.currency
-  },*/,
-  {
+  },*/ {
     name: "Missed Gain",
     icon: "😢",
     subtitle: "Drop in value from highest point.",

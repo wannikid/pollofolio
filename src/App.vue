@@ -9,7 +9,7 @@
           <span class="caption align-self-end mb-1">&nbsp;{{ kpiUnit }}</span>
         </span>
 
-        <v-menu bottom left>
+        <v-menu bottom :offset-y="offsetY">
           <template v-slot:activator="{ on }">
             <transition name="slide" mode="out-in">
               <v-btn
@@ -85,6 +85,7 @@ export default {
   },
   data() {
     return {
+      offsetY: true,
       methods: {
         sum: function(array) {
           const method = (acc, cur) => acc + cur;
