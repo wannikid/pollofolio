@@ -14,7 +14,7 @@ let kpis = [
   {
     name: "Change",
     icon: "📈",
-    subtitle: "Change in value of your assets.",
+    subtitle: "Change in your assets'value.",
     info: "https://www.investopedia.com/terms/c/change.asp",
     key: "change",
     method: "sum",
@@ -23,7 +23,7 @@ let kpis = [
   {
     name: "Current balance",
     icon: "🏦",
-    subtitle: "The current value of your assets.",
+    subtitle: "Your assets' current value.",
     info: "https://www.investopedia.com/terms/m/marketvalue.asp",
     method: "sum",
     key: "value",

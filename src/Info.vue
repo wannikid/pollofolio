@@ -3,7 +3,7 @@
     <v-expansion-panel-header class="d-flex justify-space-between">
       <span>
         <span class="title pr-3">🏦</span>
-        <span class="blue--text">{{asset.name}}</span>
+        <span class="blue--text font-weight-medium">{{asset.name}}</span>
       </span>
     </v-expansion-panel-header>
     <v-expansion-panel-content>

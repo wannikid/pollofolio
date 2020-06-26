@@ -1,7 +1,10 @@
 <template>
   <v-expansion-panel ripple>
-    <v-expansion-panel-header v-if="asset.id" class="d-flex justify-start">
-      <span class="title pr-3">✏️</span>
+    <v-expansion-panel-header v-if="asset.id" class="d-flex justify-space-between">
+      <span>
+        <span class="title pr-3">✏️</span>
+        <span class="font-weight-medium">Edit</span>
+      </span>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-form class="mt-4" v-model="valid" ref="assetForm">

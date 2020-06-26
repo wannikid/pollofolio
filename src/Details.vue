@@ -47,7 +47,8 @@
                   text
                   color="deep-purple accent-2"
                   @click="hideDetails(); $store.state.showSettings = !$store.state.showSettings"
-                >Change currency</v-btn>
+                >Change defaults</v-btn>
+                <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-stepper-content>
@@ -55,7 +56,6 @@
           <v-stepper-content step="2">
             <v-card outlined>
               <v-card-title>Identify the asset</v-card-title>
-
               <v-alert
                 v-if="asset.ticker && asset.error"
                 text
@@ -82,18 +82,15 @@
               <v-card-text
                 class="black--text"
               >Every asset on the stock market has a unique ticker symbol. Need help finding it?</v-card-text>
-              <v-card-text>
+              <v-card-text v-if="asset.ticker && asset.name">
                 <v-btn
+                  elevation="8"
                   small
                   block
                   rounded
-                  v-if="asset.ticker && asset.name"
                   @click="next()"
-                  color="success"
-                >
-                  <v-icon small left>mdi-check</v-icon>
-                  {{ asset.name }}
-                </v-btn>
+                  color="green accent-2"
+                >{{ asset.name }}</v-btn>
               </v-card-text>
               <v-card-actions>
                 <v-btn
@@ -102,7 +99,7 @@
                   color="deep-purple accent-2"
                   target="_blank"
                   href="https://finance.yahoo.com"
-                >Open search</v-btn>
+                >Open search tab</v-btn>
               </v-card-actions>
             </v-card>
           </v-stepper-content>
@@ -113,17 +110,31 @@
               <v-card-text
                 class="black--text"
               >To calculate the change over time, we need to know when you bought the asset and how much you invested.</v-card-text>
-              <v-card-subtitle>
-                <v-date-picker
-                  label="Purchase date"
-                  :full-width="true"
-                  :show-current="false"
-                  no-title
-                  v-model="asset.dateBuy"
-                  :allowed-dates="allowedDates"
-                  @change="getBuyPrice()"
-                ></v-date-picker>
-              </v-card-subtitle>
+              <v-expansion-panels flat hover v-model="openDate" tile accordion>
+                <v-expansion-panel ripple>
+                  <v-expansion-panel-header class="d-flex justify-space-between px-3">
+                    <span>
+                      <span class="title pr-3">📅</span>
+                      <span
+                        v-if="asset.dateBuy"
+                        class="font-weight-medium"
+                      >Bought on {{ asset.dateBuy }}</span>
+                      <span v-else>Specify buy date</span>
+                    </span>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-date-picker
+                      label="Purchase date"
+                      :full-width="true"
+                      :show-current="false"
+                      no-title
+                      v-model="asset.dateBuy"
+                      :allowed-dates="allowedDates"
+                      @change="getBuyPrice()"
+                    ></v-date-picker>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
               <v-card-subtitle>
                 <v-row>
                   <v-col class="pt-0">
@@ -182,16 +193,34 @@
               <v-card-text class="black--text">
                 <b>If you still own the asset just click next.</b> Otherwise, please specify when and for how much you sold them.
               </v-card-text>
-              <v-card-subtitle>
-                <v-date-picker
-                  label="Sell date"
-                  :full-width="true"
-                  :show-current="false"
-                  no-title
-                  v-model="asset.dateSell"
-                  :allowed-dates="allowedDates"
-                ></v-date-picker>
-              </v-card-subtitle>
+              <v-expansion-panels flat hover v-model="openDate" tile accordion>
+                <v-expansion-panel ripple>
+                  <v-expansion-panel-header class="d-flex justify-space-between px-3">
+                    <span>
+                      <span class="title pr-3">📅</span>
+                      <span
+                        v-if="asset.dateBuy"
+                        class="font-weight-medium"
+                      >Bought on {{ asset.dateBuy }}</span>
+                      <span v-else>Specify buy date</span>
+                    </span>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-date-picker
+                      label="Purchase date"
+                      :full-width="true"
+                      :show-current="false"
+                      no-title
+                      v-model="asset.dateBuy"
+                      :allowed-dates="allowedDates"
+                      @change="getBuyPrice()"
+                    ></v-date-picker>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+              
+
+             
               <v-card-subtitle>
                 <v-text-field
                   dense
@@ -263,12 +292,11 @@ export default {
       asset: this.data,
       panel: null,
       activeStep: 1,
-      loading: false
+      loading: false,
+      openDate: 0
     };
   },
-  created: function() {
-    if (this.$store.state.settings.termsConfirmed) this.activeStep = 2;
-  },
+  created: function() {},
   mounted: function() {},
   watch: {
     "asset.ticker": function() {
@@ -333,6 +361,7 @@ export default {
         asset: this.asset
       });
       this.loading = false;
+      this.openDate = null;
     },
     save: async function() {
       this.loading = true;
