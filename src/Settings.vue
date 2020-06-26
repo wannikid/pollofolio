@@ -21,7 +21,7 @@
         outlined
         flat
         dense
-        v-model="$store.state.settings.stopLossPct"
+        v-model="$store.state.settings.stopLoss.pct"
         type="number"
         step="1"
         min="0"
@@ -30,20 +30,6 @@
         maxlength="2"
         suffix="%"
       ></v-text-field>
-
-      <!--<v-text-field
-        outlined
-        flat
-        dense
-        v-model.lazy="$store.state.settings.taxes"
-        label="Capital gains tax rate"
-        maxlength="2"
-        type="number"
-        step="1"
-        min="0"
-        max="99"
-        suffix="%"
-      ></v-text-field>-->
       <v-select
         v-model="$store.state.settings.currency"
         :items="$store.getters.currencyList"
@@ -101,10 +87,11 @@ export default {
     };
   },
   watch: {
-    "$store.state.settings.stopLossPct": function() {
+    "$store.state.settings.stopLoss.pct": function() {
+      // commit required in order to save the new stop loss limit to the browser storage
       this.$store.commit(
-        "setStopLossPct",
-        this.$store.state.settings.stopLossPct
+        "setStopLoss",
+        this.$store.state.settings.stopLoss.pct
       );
     },
     "$store.state.settings.currency": function() {
@@ -197,9 +184,5 @@ export default {
 a {
   outline: none;
   text-decoration: none;
-}
-.brandFont {
-  font-family: "Days One", sans-serif;
-  font-size: 16pt;
 }
 </style>

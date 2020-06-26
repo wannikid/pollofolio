@@ -2,7 +2,7 @@
   <v-expansion-panel ripple>
     <v-expansion-panel-header class="d-flex justify-space-between">
       <span>
-        <v-icon class="pl-0 pr-3 black--text">mdi-finance</v-icon>
+        <span class="title pr-3">📈</span>
         <span class="font-weight-medium">Performance</span>
       </span>
       <!--<span v-if="asset.roi" class="d-flex justify-end pr-3">{{ asset.roi | toLocaleNumber(1) }} %</span>-->
@@ -48,17 +48,18 @@ export default {
           suffix: "assetCurrency"
         },
         {
-          name: "Avg. price target",
-          key: "targetPrice",
-          digits: 2,
-          suffix: "assetCurrency"
-        },
-        {
           name: "Stop Loss at",
           key: "stopLoss",
           digits: 2,
           suffix: "appCurrency"
         },
+        {
+          name: "Avg. price target",
+          key: "targetPrice",
+          digits: 2,
+          suffix: "assetCurrency"
+        },
+
         {
           name: "Holding period",
           key: "holdingPeriod",

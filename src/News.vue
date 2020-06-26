@@ -2,7 +2,7 @@
   <v-expansion-panel ripple>
     <v-expansion-panel-header class="d-flex justify-space-between">
       <span>
-        <v-icon class="pl-0 pr-3 black--text">mdi-new-box</v-icon>
+        <span class="title pr-3">📰</span>
         <span class="font-weight-medium">News</span>
       </span>
     </v-expansion-panel-header>

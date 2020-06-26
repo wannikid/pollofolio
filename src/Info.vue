@@ -2,8 +2,8 @@
   <v-expansion-panel ripple>
     <v-expansion-panel-header class="d-flex justify-space-between">
       <span>
-        <v-icon class="pl-0 pr-3 black--text">mdi-domain</v-icon>
-        <span class="font-weight-black">{{asset.name}}</span>
+        <span class="title pr-3">🏦</span>
+        <span class="blue--text">{{asset.name}}</span>
       </span>
     </v-expansion-panel-header>
     <v-expansion-panel-content>

@@ -2,7 +2,7 @@
   <v-expansion-panel ripple>
     <v-expansion-panel-header class="d-flex justify-space-between">
       <span>
-        <v-icon class="pl-0 pr-3 black--text">mdi-cash-usd-outline</v-icon>
+        <span class="title pr-3">💰</span>
         <span class="font-weight-medium">Income</span>
       </span>
       <!--<span class="d-flex justify-end pr-3">

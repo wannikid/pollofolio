@@ -12,6 +12,15 @@ Vue.use(Vuex);
 
 let kpis = [
   {
+    name: "Change",
+    icon: "📈",
+    subtitle: "Change in value of your assets.",
+    info: "https://www.investopedia.com/terms/c/change.asp",
+    key: "change",
+    method: "sum",
+    unit: "appCurrency"
+  },
+  {
     name: "Current balance",
     icon: "🏦",
     subtitle: "The current value of your assets.",
@@ -38,15 +47,7 @@ let kpis = [
     value: null,
     unit: "appCurrency"
   },*/,
-  {
-    name: "Change",
-    icon: "📈",
-    subtitle: "Change in value of your assets.",
-    info: "https://www.investopedia.com/terms/c/change.asp",
-    key: "change",
-    method: "sum",
-    unit: "appCurrency"
-  },
+
   {
     name: "Invested",
     icon: "🧾",
@@ -157,7 +158,10 @@ export default new Vuex.Store({
     stats: {},
     exchangeRates: null,
     settings: {
-      stopLossPct: 0,
+      stopLoss: {
+        pct: 0,
+        date: null
+      },
       taxes: 0,
       currency: "EUR",
       benchmark: {
@@ -189,8 +193,9 @@ export default new Vuex.Store({
     setTaxes(state, value) {
       state.settings.taxes = parseFloat(value);
     },
-    setStopLossPct(state, value) {
-      state.settings.stopLossPct = parseFloat(value);
+    setStopLoss(state, value) {
+      state.settings.stopLoss.pct = parseFloat(value);
+      state.settings.stopLoss.date = new Date().toISOString().substring(0, 10);
     },
     confirmTerms(state) {
       state.settings.termsConfirmed = true;

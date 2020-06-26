@@ -223,10 +223,10 @@ html {
   transition: 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .slide-enter {
-  transform: translate(100%, 0);
+  transform: translate(-100%, 0);
 }
 .slide-leave-to {
-  transform: translate(-100%, 0);
+  transform: translate(100%, 0);
 }
 
 .gradientBg {

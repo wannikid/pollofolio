@@ -14,12 +14,12 @@ export default class Asset {
     this.dateSell = item._dateSell;
     this.timeseries = item._timeseries;
     this.payouts = item._payouts;
-    this.stopLoss = item._stopLoss;
-    this.stopLossBaseline = item._stopLossBaseline;
     this.buyPrice = item._buyPrice;
     this.targetPrice = item._targetPrice;
     this.yearlyHigh = item._yearlyHigh;
     this.yearlyLow = item._yearlyLow;
+
+    // values that don't need setters/getters
     this.peRatio = item.peRatio;
     this.address = item.address;
     this.industry = item.industry;
@@ -86,16 +86,6 @@ export default class Asset {
   get targetPrice() {
     return this._targetPrice ? this._targetPrice : null;
   }
-
-  /*get lastTrade() {
-    return this._lastTrade
-      ? this._lastTrade.toISOString().substring(0, 10)
-      : null;
-  }
-
-  set lastTrade(val) {
-    this._lastTrade = val ? new Date(val) : null;
-  }*/
 
   get lastPrice() {
     return this.prices.length > 0 ? this.prices[this.prices.length - 1] : null;
@@ -239,38 +229,14 @@ export default class Asset {
   }
 
   get buyPrice() {
-    //if (this.lastTrade) return this._timeseries[this.dates[0]];
-    return this._buyPrice ? this._buyPrice : this.buyValue / this.amount;
+    return this._buyPrice;
   }
 
   get stopLoss() {
-    if (store.state.settings.stopLossPct > 0) {
-      if (this.stopLossBaseline) {
-        this.stopLoss =
-          this.stopLossBaseline -
-          (this.stopLossBaseline / 100) * store.state.settings.stopLossPct;
-      }
-    }
+    const baseline = this.timeseries[store.state.settings.stopLoss.date];
+    if (baseline && store.state.settings.stopLoss.pct > 0)
+      return baseline - (baseline / 100) * store.state.settings.stopLoss.pct;
     return null;
-  }
-
-  set stopLoss(val) {
-    this._stopLoss = val ? parseFloat(val) : null;
-  }
-
-  get stopLossBaseline() {
-    // make sure the stop loss is trailing the price if it rises
-    if (
-      isNaN(this._stopLossBaseline) ||
-      this.lastPrice >= this._stopLossBaseline
-    ) {
-      this._stopLossBaseline = this.lastPrice;
-      return this._stopLossBaseline;
-    } else return null;
-  }
-
-  set stopLossBaseline(val) {
-    this._stopLossBaseline = val ? parseFloat(val) : null;
   }
 
   get payouts() {

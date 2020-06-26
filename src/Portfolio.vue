@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-content>
+    <v-content class="mb-12">
       <v-container v-if="$store.state.assets.length === 0" class="text-center px-5">
         <div
           class="anim1 handFont my-6 font-weight-light"
@@ -21,36 +21,29 @@
         <template v-if="assets.length > 0">
           <v-row class="mx-1">
             <v-col
-              class="py-0 px-0"
+              class="anim2 py-0 px-0"
               cols="12"
               sm="6"
               md="4"
               v-for="(item, idx) of assets"
               :key="`asset-${idx}`"
             >
-              <v-alert
-                dense
-                :color="borderColor(item)"
-                border="left"
-                colored-border
-                class="pl-0 mx-2 mb-2 gradientBg"
-                :elevation="2"
+              <v-card
+                light
+                outlined
+                ripple
+                :disabled="item.id === assetID"
+                class="mx-2 mb-2"
                 v-on:click.native="showDetails(item)"
               >
-                <v-list-item>
-                  <v-list-item-content
-                    class="font-weight-medium grey--text text--darken-4"
-                  >{{ item.name }}</v-list-item-content>
-
-                  <v-list-item-action class="my-0">
-                    <div class="numberFont">
+                <v-list-item class="pr-2 px-3">
+                  <v-list-item-content class="font-weight-regular py-2">
+                    {{ item.name }}
+                    <div class="numberFont" :class="numberColor(item)">
                       {{ item[kpi.key] | toLocaleNumber(0) }}
                       <span class="caption">&nbsp;{{ unit }}</span>
-                    </div>
-                    <!--<v-list-item-action-text class="body-1" v-if="expandAssets">
-                  <span v-if="item.prices.length === 0" class="ml-2">🔍</span>
-                  <span v-if="item.hasAlarm()" class="ml-2">⏰</span>
-                  <span v-if="item.forexChange" class="ml-2">💱</span>
+                      <span v-if="item.hasAlarm()" class="ml-2">⏰</span>
+                      <!-- <span v-if="item.forexChange" class="ml-2">💵</span>
                   <span v-if="item.return" class="ml-2">💰</span>
                   <span
                     v-if="item.signal && item.signal.toUpperCase().includes('BUY')"
@@ -59,18 +52,23 @@
                   <span
                     v-if="item.signal && item.signal.toUpperCase().includes('SELL')"
                     class="ml-2"
-                  >👎</span>
-                    </v-list-item-action-text>--->
+                      >👎</span>-->
+                    </div>
+                  </v-list-item-content>
+                  <v-list-item-action class="ma-0">
+                    <v-btn small icon>
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
                   </v-list-item-action>
                 </v-list-item>
                 <div
                   v-if="expanded && item.prices.length > 1"
-                  class="hidden-sm-and-up mt-0 pl-2"
+                  class="hidden-sm-and-up"
                   style="height:55px"
                 >
                   <Sparkline :values="item.prices" height="50" :kpi="item.change"/>
                 </div>
-              </v-alert>
+              </v-card>
             </v-col>
           </v-row>
         </template>
@@ -98,13 +96,19 @@ export default {
     unit: String
   },
   data() {
-    return {};
+    return {
+      assetID: this.id
+    };
   },
   created: function() {},
   mounted: function() {
     gsap.from(".anim1", { duration: 1, y: -50, opacity: 0, stagger: 0.6 });
   },
-  watch: {},
+  watch: {
+    kpi: function() {
+      gsap.from(".anim2", { duration: 0.5, opacity: 0, x: -500, stagger: 0.1 });
+    }
+  },
   computed: {
     kpi() {
       return this.$store.getters.kpi;
@@ -117,6 +121,12 @@ export default {
     }
   },
   methods: {
+    numberColor(asset) {
+      if (this.kpi.key === "change")
+        return asset[this.kpi.key] < 0
+          ? "red--text text--accent-3"
+          : "green--text text--accent-4";
+    },
     borderColor(asset) {
       if (asset.isSold())
         return asset.return > 0 ? "green accent-2" : "red accent-2";

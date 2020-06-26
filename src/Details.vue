@@ -1,19 +1,20 @@
 <template>
   <div>
     <v-toolbar dense flat light>
-      <v-btn small icon @click="hideDetails()">
-        <v-icon color="black">mdi-arrow-left-circle</v-icon>
+      <v-btn icon @click="hideDetails()">
+        <v-icon color="black">mdi-close</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="!asset.id"
+        v-if="!asset.id && activeStep !== 2"
         color="black"
         class="white--text"
         small
         :disabled="disabled"
         @click="next()"
       >Next</v-btn>
-      <v-btn v-else @click="sync()" small outlined :loading="loading">Update</v-btn>
+
+      <v-btn v-if="asset.id" @click="sync()" small outlined :loading="loading">Update</v-btn>
     </v-toolbar>
     <v-overlay :absolute="true" :value="loading">
       <v-row class="fill-height" align-content="center" justify="center">
@@ -54,14 +55,7 @@
           <v-stepper-content step="2">
             <v-card outlined>
               <v-card-title>Identify the asset</v-card-title>
-              <v-alert
-                v-if="asset.ticker && asset.name"
-                prominent
-                text
-                color="teal"
-                type="success"
-                class="mx-4"
-              >{{ asset.name }}</v-alert>
+
               <v-alert
                 v-if="asset.ticker && asset.error"
                 text
@@ -88,6 +82,19 @@
               <v-card-text
                 class="black--text"
               >Every asset on the stock market has a unique ticker symbol. Need help finding it?</v-card-text>
+              <v-card-text>
+                <v-btn
+                  small
+                  block
+                  rounded
+                  v-if="asset.ticker && asset.name"
+                  @click="next()"
+                  color="success"
+                >
+                  <v-icon small left>mdi-check</v-icon>
+                  {{ asset.name }}
+                </v-btn>
+              </v-card-text>
               <v-card-actions>
                 <v-btn
                   text
