@@ -1,5 +1,4 @@
 import Portfolio from "./Portfolio";
-import Insights from "./Insights";
 import Details from "./Details";
 import Form from "./Form.vue";
 import Info from "./Info.vue";
@@ -56,18 +55,6 @@ export default new VueRouter({
         }
       ],
       props: { default: true, drawer: true },
-      beforeEnter: (to, from, next) => {
-        store.state.drawer = true;
-        next();
-      }
-    },
-    {
-      path: "/insights",
-      name: "insights",
-      components: {
-        default: Portfolio,
-        drawer: Insights
-      },
       beforeEnter: (to, from, next) => {
         store.state.drawer = true;
         next();

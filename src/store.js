@@ -14,7 +14,7 @@ let kpis = [
   {
     name: "Change",
     icon: "📈",
-    subtitle: "Change in your assets'value.",
+    subtitle: "Your assets' change in value.",
     info: "https://www.investopedia.com/terms/c/change.asp",
     key: "change",
     method: "sum",
