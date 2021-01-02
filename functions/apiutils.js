@@ -1,13 +1,14 @@
 const fetch = require("node-fetch");
 
 const allowedOrigins = [
+  "https://rwh6j.csb.app",
   "https://h6kbw.csb.app",
   "https://h6kbw.codesandbox.io",
   "https://pollofolio.netlify.app"
 ];
 
-exports.callApi = function(uri, params, origin) {
-  return new Promise(async function(resolve) {
+exports.callApi = function (uri, params, origin) {
+  return new Promise(async function (resolve) {
     let responseText = null;
     let headers = {};
     let res = null;
@@ -18,7 +19,7 @@ exports.callApi = function(uri, params, origin) {
 
     try {
       uri = new URL(uri);
-      Object.keys(params).forEach(key =>
+      Object.keys(params).forEach((key) =>
         uri.searchParams.append(key, params[key])
       );
       res = await fetch(uri);
