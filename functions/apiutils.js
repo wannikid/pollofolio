@@ -13,9 +13,9 @@ exports.callApi = function (uri, params, origin) {
     let headers = {};
     let res = null;
 
-    if (allowedOrigins.indexOf(origin) > -1) {
+    //if (allowedOrigins.indexOf(origin) > -1) {
       headers["Access-Control-Allow-Origin"] = origin;
-    }
+    //}
 
     try {
       uri = new URL(uri);
